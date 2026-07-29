@@ -1,0 +1,20 @@
+[
+  {
+    "id": "b05b837f-6480-46b7-8b43-71d10a274cd9",
+    "category": "acnes",
+    "label": "label1",
+    "beforePath": "/uploads/before-after/1785150219970-885373166.jpg",
+    "afterPath": "/uploads/before-after/1785150220003-964306973.jpeg",
+    "createdAt": "2026-07-27T11:03:40.013Z",
+    "updatedAt": "2026-07-27T11:03:40.013Z"
+  },
+  {
+    "id": "ee9489d8-3755-4b4f-ac37-7c489b654967",
+    "category": "pigmentation",
+    "label": "Pigmented patients",
+    "beforePath": "/uploads/before-after/1785150692005-166343648.jpeg",
+    "afterPath": "/uploads/before-after/1785150692007-410094620.jpeg",
+    "createdAt": "2026-07-27T11:11:32.016Z",
+    "updatedAt": "2026-07-27T11:11:32.016Z"
+  }
+]

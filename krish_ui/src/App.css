@@ -1,0 +1,6 @@
+/* Base Layout Styles Removed to avoid conflict with custom full-width sections */
+#root {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
