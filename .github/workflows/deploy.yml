@@ -81,13 +81,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Copy docker-compose file to VM
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.AZURE_HOST }}
-          username: ${{ secrets.AZUREUSER }}
-          key: ${{ secrets.AZURE_SSH_KEY }}
-          source: "docker-compose.yml"
-          target: "/var/www/krish_site"
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.AZURE_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.AZURE_HOST }} >> ~/.ssh/known_hosts
+          scp docker-compose.yml ${{ secrets.AZUREUSER }}@${{ secrets.AZURE_HOST }}:/var/www/krish_site/
 
       - name: Execute Deployment over SSH
         uses: appleboy/ssh-action@v1.0.3
