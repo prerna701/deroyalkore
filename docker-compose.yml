@@ -15,7 +15,7 @@ services:
       - app-network
 
   backend:
-    image: ghcr.io/${GITHUB_REPOSITORY_OWNER:-local}/krish-site-backend:latest
+    image: ghcr.io/${GITHUB_REPOSITORY_OWNER:-local}/deroyalkore-backend:latest
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -37,7 +37,7 @@ services:
       - app-network
 
   frontend:
-    image: ghcr.io/${GITHUB_REPOSITORY_OWNER:-local}/krish-site-frontend:latest
+    image: ghcr.io/${GITHUB_REPOSITORY_OWNER:-local}/deroyalkore-frontend:latest
     build:
       context: ./krish_ui
       dockerfile: Dockerfile
