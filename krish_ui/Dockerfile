@@ -8,6 +8,8 @@ COPY package*.json ./
 RUN --mount=type=cache,target=/root/.npm npm ci
 
 COPY . .
+ARG VITE_BACKEND_DOMAIN
+ENV VITE_BACKEND_DOMAIN=$VITE_BACKEND_DOMAIN
 RUN npm run build
 
 FROM node:24-alpine
