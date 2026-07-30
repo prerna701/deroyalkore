@@ -198,7 +198,7 @@ const AdminDashboard: React.FC = () => {
     return (
         <div className="flex min-h-[calc(100vh-90px)] bg-gray-50">
             {/* Sidebar */}
-            <div className="w-64 bg-[#2b2520] text-white flex flex-col">
+            <div className="w-64 bg-[#2b2520] text-white flex flex-col sticky top-[90px] h-[calc(100vh-90px)] shrink-0">
                 <div className="p-6 text-xl font-bold border-b border-gray-700">
                     Admin Panel
                 </div>
