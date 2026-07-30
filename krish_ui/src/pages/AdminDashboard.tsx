@@ -220,6 +220,12 @@ const AdminDashboard: React.FC = () => {
                     >
                         Treatments
                     </button>
+                    <button 
+                        className={`text-left p-3 rounded transition-colors ${activeTab === 'faqs' ? 'bg-[#4a3f36]' : 'hover:bg-[#3a312a]'}`}
+                        onClick={() => setActiveTab('faqs')}
+                    >
+                        FAQs
+                    </button>
                 </div>
                 <div className="p-4 border-t border-gray-700">
                     <button 
