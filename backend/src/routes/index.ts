@@ -4,6 +4,9 @@ import beforeAfterRoutes from './beforeAfter.routes';
 import userRoutes from './user.routes';
 import treatmentRoutes from './treatment.routes';
 import faqRoutes from './faq.routes';
+import aboutRoutes from './about.routes';
+import contactRoutes from './contact.routes';
+import galleryRoutes from './gallery.routes';
 import { ApiResponse } from '../utils/ApiResponse';
 import { requireAdmin } from '../middlewares/requireAdmin';
 
@@ -26,5 +29,8 @@ router.use('/before-after', beforeAfterRoutes);
 router.use('/users', requireAdmin, userRoutes);
 router.use('/treatments', treatmentRoutes);
 router.use('/faqs', faqRoutes);
+router.use('/about', aboutRoutes);
+router.use('/contact', contactRoutes);
+router.use('/gallery', galleryRoutes);
 
 export default router;
