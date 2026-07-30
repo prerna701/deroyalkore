@@ -128,5 +128,110 @@ export const apiClient = {
             headers: getHeaders()
         });
         return handleResponse(response);
+    },
+
+    getAboutSections: async () => {
+        const response = await fetch(`${BASE_URL}/about?t=${Date.now()}`, {
+            method: 'GET',
+            headers: getHeaders(),
+            cache: 'no-store'
+        });
+        return handleResponse(response);
+    },
+
+    createAboutSection: async (payload: any) => {
+        const response = await fetch(`${BASE_URL}/about`, {
+            method: 'POST',
+            headers: getHeaders(),
+            body: JSON.stringify(payload)
+        });
+        return handleResponse(response);
+    },
+
+    updateAboutSection: async (id: string, payload: any) => {
+        const response = await fetch(`${BASE_URL}/about/${id}`, {
+            method: 'PUT',
+            headers: getHeaders(),
+            body: JSON.stringify(payload)
+        });
+        return handleResponse(response);
+    },
+
+    deleteAboutSection: async (id: string) => {
+        const response = await fetch(`${BASE_URL}/about/${id}`, {
+            method: 'DELETE',
+            headers: getHeaders()
+        });
+        return handleResponse(response);
+    },
+
+    getContactSections: async () => {
+        const response = await fetch(`${BASE_URL}/contact?t=${Date.now()}`, {
+            method: 'GET',
+            headers: getHeaders(),
+            cache: 'no-store'
+        });
+        return handleResponse(response);
+    },
+
+    createContactSection: async (payload: any) => {
+        const response = await fetch(`${BASE_URL}/contact`, {
+            method: 'POST',
+            headers: getHeaders(),
+            body: JSON.stringify(payload)
+        });
+        return handleResponse(response);
+    },
+
+    updateContactSection: async (id: string, payload: any) => {
+        const response = await fetch(`${BASE_URL}/contact/${id}`, {
+            method: 'PUT',
+            headers: getHeaders(),
+            body: JSON.stringify(payload)
+        });
+        return handleResponse(response);
+    },
+
+    deleteContactSection: async (id: string) => {
+        const response = await fetch(`${BASE_URL}/contact/${id}`, {
+            method: 'DELETE',
+            headers: getHeaders()
+        });
+        return handleResponse(response);
+    },
+
+    getGallerySections: async () => {
+        const response = await fetch(`${BASE_URL}/gallery?t=${Date.now()}`, {
+            method: 'GET',
+            headers: getHeaders(),
+            cache: 'no-store'
+        });
+        return handleResponse(response);
+    },
+
+    createGallerySection: async (payload: any) => {
+        const response = await fetch(`${BASE_URL}/gallery`, {
+            method: 'POST',
+            headers: getHeaders(),
+            body: JSON.stringify(payload)
+        });
+        return handleResponse(response);
+    },
+
+    updateGallerySection: async (id: string, payload: any) => {
+        const response = await fetch(`${BASE_URL}/gallery/${id}`, {
+            method: 'PUT',
+            headers: getHeaders(),
+            body: JSON.stringify(payload)
+        });
+        return handleResponse(response);
+    },
+
+    deleteGallerySection: async (id: string) => {
+        const response = await fetch(`${BASE_URL}/gallery/${id}`, {
+            method: 'DELETE',
+            headers: getHeaders()
+        });
+        return handleResponse(response);
     }
 };

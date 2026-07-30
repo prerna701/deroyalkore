@@ -5,6 +5,7 @@ import { clearAdminSession, getStoredAdminSession, resolveAdminRole, saveAdminSe
 import { normalizeBeforeAfterCases } from '../services/beforeAfterService';
 import { AdminTreatments } from '../components/admin/AdminTreatments';
 import AdminFaqs from '../components/admin/AdminFaqs';
+import AdminSiteContent from '../components/admin/AdminSiteContent';
 
 interface CaseForm {
     id: number;
@@ -221,6 +222,12 @@ const AdminDashboard: React.FC = () => {
                         Treatments
                     </button>
                     <button 
+                        className={`text-left p-3 rounded transition-colors ${activeTab === 'site-content' ? 'bg-[#4a3f36]' : 'hover:bg-[#3a312a]'}`}
+                        onClick={() => setActiveTab('site-content')}
+                    >
+                        Site Content
+                    </button>
+                    <button 
                         className={`text-left p-3 rounded transition-colors ${activeTab === 'faqs' ? 'bg-[#4a3f36]' : 'hover:bg-[#3a312a]'}`}
                         onClick={() => setActiveTab('faqs')}
                     >
@@ -272,6 +279,11 @@ const AdminDashboard: React.FC = () => {
                                 <h3 className="text-xl font-bold text-gray-800">FAQs</h3>
                                 <p className="text-sm text-gray-500 mt-2">Manage public FAQs for the website.</p>
                             </div>
+                            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-center items-center text-center cursor-pointer hover:shadow-md transition-shadow" onClick={() => setActiveTab('site-content')}>
+                                <span className="material-symbols-outlined text-4xl text-[#D9A577] mb-3">web</span>
+                                <h3 className="text-xl font-bold text-gray-800">Site Content</h3>
+                                <p className="text-sm text-gray-500 mt-2">Manage about, contact, and clinic gallery sections.</p>
+                            </div>
                         </div>
                     </div>
                 )}
@@ -282,6 +294,10 @@ const AdminDashboard: React.FC = () => {
 
                 {activeTab === 'faqs' && (
                     <AdminFaqs />
+                )}
+
+                {activeTab === 'site-content' && (
+                    <AdminSiteContent />
                 )}
 
                 {activeTab === 'before-after' && (

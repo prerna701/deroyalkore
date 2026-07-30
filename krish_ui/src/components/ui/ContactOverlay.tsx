@@ -1,12 +1,49 @@
+import React, { useEffect, useState } from 'react';
+import { apiClient } from '../../services/apiClient';
+import type { SiteContact } from '../../types';
 
-
-// 1. This Interface fixes the "implicitly has any type" error
 interface ContactOverlayProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+const fallbackContact: SiteContact = {
+  id: 'fallback-contact',
+  heading: 'Contact Us!',
+  address: 'House No. 142, Near Sports Complex, Sector 78, Sahibzada Ajit Singh Nagar, Punjab 140308',
+  phone: '+91-70870-00365',
+  website: 'www.zivaskinclinic.com',
+  mapLink: '#',
+  timings: [
+    { label: 'Mon - Tue', value: '10:00am to 2:00pm & 4:00pm to 7:00pm' },
+    { label: 'Wednesday', value: 'Closed', isClosed: true },
+    { label: 'Thu - Sat', value: '10:00am to 2:00pm & 4:00pm to 7:00pm' },
+    { label: 'Sunday', value: '11:00am to 2:00pm' },
+  ],
+};
+
 const ContactOverlay: React.FC<ContactOverlayProps> = ({ isOpen, onClose }) => {
+  const [content, setContent] = useState<SiteContact>(fallbackContact);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    let isMounted = true;
+    apiClient.getContactSections()
+      .then((records) => {
+        if (isMounted && Array.isArray(records) && records[0]) {
+          setContent(records[0]);
+        }
+      })
+      .catch(() => {
+        if (isMounted) setContent(fallbackContact);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isOpen]);
+
   // If not open, don't render anything
   if (!isOpen) return null;
 
@@ -35,7 +72,7 @@ const ContactOverlay: React.FC<ContactOverlayProps> = ({ isOpen, onClose }) => {
           {/* Header */}
           <div className="text-center mb-12">
             <h2 className="text-black text-4xl md:text-5xl font-bold mb-3 tracking-tight">
-              Contact Us!
+              {content.heading}
             </h2>
             <div className="w-20 h-1 bg-gradient-to-r from-transparent via-primary to-transparent mx-auto"></div>
           </div>
@@ -52,11 +89,11 @@ const ContactOverlay: React.FC<ContactOverlayProps> = ({ isOpen, onClose }) => {
                 </svg>
               </div>
               <div className="text-black space-y-3 text-sm md:text-base italic">
-                <p className="max-w-[280px] leading-relaxed">House No. 142, Near Sports Complex, Sector 78, Sahibzada Ajit Singh Nagar, Punjab 140308</p>
-                <p className="text-primary font-semibold not-italic">+91-70870-00365</p>
-                <p className="text-primary/60 underline hover:text-primary transition-colors cursor-pointer not-italic">www.zivaskinclinic.com</p>
+                <p className="max-w-[280px] leading-relaxed">{content.address}</p>
+                <p className="text-primary font-semibold not-italic">{content.phone}</p>
+                <p className="text-primary/60 underline hover:text-primary transition-colors cursor-pointer not-italic">{content.website}</p>
               </div>
-              <a href="#" className="text-black font-bold text-[10px] tracking-[4px] uppercase border-b border-primary pb-1 hover:text-primary transition-all">
+              <a href={content.mapLink || '#'} className="text-black font-bold text-[10px] tracking-[4px] uppercase border-b border-primary pb-1 hover:text-primary transition-all">
                 Locate us on map
               </a>
             </div>
@@ -69,22 +106,14 @@ const ContactOverlay: React.FC<ContactOverlayProps> = ({ isOpen, onClose }) => {
                 </svg>
               </div>
               <div className="text-black/80 space-y-4 text-xs md:text-sm tracking-wide">
-                <div>
-                  <p className="text-black uppercase font-bold text-[10px] mb-1 opacity-60">Mon - Tue</p>
-                  <p>10:00am to 2:00pm & 4:00pm to 7:00pm</p>
-                </div>
-                <div>
-                  <p className="text-red-500 uppercase font-bold text-[10px] mb-1 opacity-70">Wednesday</p>
-                  <p className="line-through opacity-40">Closed</p>
-                </div>
-                <div>
-                  <p className="text-black uppercase font-bold text-[10px] mb-1 opacity-60">Thu - Sat</p>
-                  <p>10:00am to 2:00pm & 4:00pm to 7:00pm</p>
-                </div>
-                <div>
-                  <p className="text-black uppercase font-bold text-[10px] mb-1 opacity-60">Sunday</p>
-                  <p>11:00am to 2:00pm</p>
-                </div>
+                {content.timings.map((timing) => (
+                  <div key={timing.label}>
+                    <p className={`${timing.isClosed ? 'text-red-500 opacity-70' : 'text-black opacity-60'} uppercase font-bold text-[10px] mb-1`}>
+                      {timing.label}
+                    </p>
+                    <p className={timing.isClosed ? 'line-through opacity-40' : ''}>{timing.value}</p>
+                  </div>
+                ))}
               </div>
             </div>
 

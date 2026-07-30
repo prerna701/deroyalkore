@@ -1,8 +1,42 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { UI_STRINGS } from '../../constants/uiContent';
+import { apiClient } from '../../services/apiClient';
+import type { SiteGallery } from '../../types';
 
 const ClinicGallery: React.FC = memo(() => {
     const { clinicGallery } = UI_STRINGS;
+    const fallbackGallery: SiteGallery = {
+        id: 'fallback-gallery',
+        title: clinicGallery.title,
+        titleSuffix: clinicGallery.titleSuffix,
+        subtitle: clinicGallery.subtitle,
+        note: 'World-Class Infrastructure - Advanced Skin Technology - Luxury Care',
+        images: clinicGallery.images.map((image, index) => ({
+            id: `fallback-gallery-${index}`,
+            url: image.url,
+            title: image.title,
+            sortOrder: index + 1,
+        })),
+    };
+    const [content, setContent] = useState<SiteGallery>(fallbackGallery);
+
+    useEffect(() => {
+        let isMounted = true;
+
+        apiClient.getGallerySections()
+            .then((records) => {
+                if (isMounted && Array.isArray(records) && records[0]) {
+                    setContent(records[0]);
+                }
+            })
+            .catch(() => {
+                if (isMounted) setContent(fallbackGallery);
+            });
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
 
     return (
         <section
@@ -12,10 +46,10 @@ const ClinicGallery: React.FC = memo(() => {
                 {/* Header */}
                 <div className="text-center mb-10 space-y-2">
                     <span className="text-primary text-xs font-bold uppercase tracking-[5px] block animate-fade-in">
-                        {clinicGallery.subtitle}
+                        {content.subtitle}
                     </span>
                     <h2 className="text-slate-950 text-3xl md:text-5xl font-bold tracking-tight">
-                        {clinicGallery.title} <span className="text-primary italic">{clinicGallery.titleSuffix}</span>
+                        {content.title} <span className="text-primary italic">{content.titleSuffix}</span>
                     </h2>
                     <div className="flex justify-center mt-6">
                         <div className="h-1 w-24 bg-gradient-to-r from-transparent via-primary to-transparent rounded-full"></div>
@@ -24,9 +58,9 @@ const ClinicGallery: React.FC = memo(() => {
 
                 {/* Uniform Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                    {clinicGallery.images.map((img, idx) => (
+                    {content.images.map((img, idx) => (
                         <div
-                            key={idx}
+                            key={img.id || idx}
                             className="group relative rounded-[1.5rem] overflow-hidden shadow-xl hover:shadow-[0_30px_60px_rgba(211,175,55,0.2)] transition-all duration-700 hover:-translate-y-2 border border-primary/5 aspect-[4/3]"
                         >
                             <img
@@ -59,7 +93,7 @@ const ClinicGallery: React.FC = memo(() => {
                 {/* Bottom CTA or Note */}
                 <div className="mt-8 text-center flex-shrink-0">
                     <p className="text-gray-400 text-xs uppercase tracking-[4px] font-medium">
-                        World-Class Infrastructure • Advanced Skin Technology • Luxury Care
+                        {content.note}
                     </p>
                 </div>
             </div>
