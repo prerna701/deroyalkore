@@ -13,6 +13,8 @@ import OffersPage from '../pages/OffersPage';
 import ScrollToTop from '../components/common/ScrollToTop';
 import Header from '../components/common/Header';
 
+import ClinicGallery from '../components/ui/ClinicGallery';
+
 const AppRouter = () => {
     return (
         <>
@@ -26,7 +28,7 @@ const AppRouter = () => {
                 <Route path="/results" element={<BeforeAfterPage />} />
                 <Route path="/confirmation" element={<Confirmation />} />
                 <Route path="/pricing" element={<PricingPage />} />
-                <Route path="/gallery" element={<div className="p-20 text-center text-2xl mt-32">Gallery Page (Coming Soon)</div>} />
+                <Route path="/gallery" element={<ClinicGallery />} />
                 <Route path="/offers" element={<OffersPage />} />
                 <Route path="/about" element={<div className="p-20 text-center text-2xl mt-32">About Page (Coming Soon)</div>} />
                 <Route path="/ai-analysis" element={<div className="p-20 text-center text-2xl mt-32">AI Skin Analysis (Coming Soon)</div>} />

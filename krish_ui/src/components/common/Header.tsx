@@ -28,9 +28,9 @@ const Header: React.FC = () => {
         { name: 'Results', href: '/results', type: 'link' },
         { name: 'Pricing', href: '/pricing', type: 'link' },
         { name: 'Offers', href: '/offers', type: 'link' },
-        { name: 'About', href: '/about', type: 'link' },
+        { name: 'About', href: '#contact', type: 'link' },
         { name: 'AI Analysis', href: '/ai-analysis', type: 'link' },
-        { name: 'Contact', href: '/contact', type: 'link' }
+        { name: 'Contact', href: '#contact', type: 'link' }
     ];
 
     const handleNavigation = (path: string) => {
@@ -92,7 +92,12 @@ const Header: React.FC = () => {
                                     href={link.href || '#'}
                                     onClick={(e) => {
                                         e.preventDefault();
-                                        if (link.href) handleNavigation(link.href);
+                                        if (link.href === '#contact') {
+                                            window.dispatchEvent(new Event('open-contact'));
+                                            setIsDropdownOpen(null);
+                                        } else if (link.href) {
+                                            handleNavigation(link.href);
+                                        }
                                     }}
                                     className="text-[#EADBCA] font-medium text-sm tracking-widest uppercase transition-colors duration-300 hover:text-[#a68a4c] relative after:absolute after:bottom-[-6px] after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-[#a68a4c] after:transition-transform after:duration-300 group-hover:after:scale-x-100"
                                 >
