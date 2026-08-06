@@ -22,6 +22,17 @@ const TreatmentsList: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-[#FDFBF7] pt-32 pb-20">
+            {/* Back Button */}
+            <div className="max-w-7xl mx-auto px-6 md:px-10 mb-8">
+                <button
+                    onClick={() => navigate('/')}
+                    className="flex items-center cursor-pointer text-[#8B7A66] hover:text-[#5D4634] transition-colors font-sans text-sm tracking-widest uppercase font-bold"
+                >
+                    <span className="material-symbols-outlined mr-2 text-lg">arrow_back</span>
+                    Back to Home
+                </button>
+            </div>
+
             {/* Header Content */}
             <div className="max-w-7xl mx-auto px-6 md:px-10 text-center mb-16">
                 <h1 className="font-sans text-5xl md:text-6xl font-bold text-[#3A2D23] mb-4">

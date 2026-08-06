@@ -155,40 +155,6 @@ const Header: React.FC = () => {
                     ))}
                 </nav>
 
-                {/* Utility Icons */}
-                <div className="hidden md:flex items-center space-x-5">
-                    {/* Search */}
-                    <button className="text-[#a68a4c] hover:opacity-70 transition-opacity">
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
-                        </svg>
-                    </button>
-
-                    {/* Shopping Bag */}
-                    <button className="text-[#a68a4c] relative hover:opacity-70 transition-opacity">
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
-                        </svg>
-                        <span className="absolute -top-1 -right-1.5 bg-[#a68a4c] text-white rounded-full w-4 h-4 flex items-center justify-center text-[0.6rem] font-bold">
-                            3
-                        </span>
-                    </button>
-
-                    {/* User Profile */}
-                    <button className="text-[#a68a4c] hover:opacity-70 transition-opacity">
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
-                        </svg>
-                    </button>
-                </div>
-
-                {/* Mobile Menu Toggle */}
-                <button className="flex h-10 w-10 items-center justify-center text-[#a68a4c] hover:opacity-70 transition-opacity lg:hidden">
-                    <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path d="M4 6h16M4 12h16M4 18h16" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
-                    </svg>
-                </button>
-
             </div>
         </header>
     );

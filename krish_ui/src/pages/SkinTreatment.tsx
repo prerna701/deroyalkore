@@ -49,11 +49,7 @@ const SkinTreatment: React.FC = memo(() => {
 
     const handleBack = useCallback(() => {
         if (step === 0) {
-            if (window.history.state && window.history.state.idx > 0) {
-                navigate(-1);
-            } else {
-                navigate('/treatments');
-            }
+            navigate('/treatments');
         } else {
             setStep((s) => s - 1);
         }

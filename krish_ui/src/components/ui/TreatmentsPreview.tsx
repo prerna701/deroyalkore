@@ -38,8 +38,8 @@ const TreatmentsPreview: React.FC<TreatmentsPreviewProps> = ({ onSelect, onViewA
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-7 md:gap-8 2xl:gap-10">
                     {treatments.map((treatment) => (
                         <div
-                            key={treatment.id}
-                            onClick={() => onSelect(treatment.id)}
+                            key={treatment.slug || treatment._id}
+                            onClick={() => onSelect((treatment.slug || treatment._id) as string)}
                             className="group flex cursor-pointer flex-col gap-5"
                         >
                             {/* Heading - Outside and Top */}

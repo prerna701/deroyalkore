@@ -2,6 +2,7 @@ import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSEO } from '../hooks/useSEO';
 import { useBeforeAfterCases } from '../hooks/useBeforeAfterCases';
+import GlossyButton from '../components/ui/GlossyButton';
 
 const BeforeAfterPage: React.FC = memo(() => {
     const navigate = useNavigate();
@@ -39,7 +40,7 @@ const BeforeAfterPage: React.FC = memo(() => {
     const categories = useMemo(() => ['all', ...groupedCases.map((group) => group.category)], [groupedCases]);
 
     return (
-        <section className="min-h-screen bg-[#f8f2ea] pt-24 pb-24 selection:bg-primary/30 sm:pt-28">
+        <section className="min-h-screen bg-[#f8f2ea] pt-20 pb-16 selection:bg-primary/30">
             <header className="fixed left-0 right-0 top-0 z-50 flex h-16 items-center border-b border-white/5 bg-[#1d1915] px-6 shadow-2xl backdrop-blur-md">
                 <button
                     onClick={handleBack}
@@ -48,16 +49,10 @@ const BeforeAfterPage: React.FC = memo(() => {
                     <span className="material-symbols-outlined transition-transform group-hover:-translate-x-1">arrow_back</span>
                     <span className="text-[10px] font-bold uppercase tracking-widest">Return to Rituals</span>
                 </button>
-                <div className="hidden flex-1 justify-center md:flex">
-                    <h1 className="text-[10px] font-bold uppercase tracking-[0.4em] text-primary">
-                        CLINICAL <span className="ml-1 font-light text-white/20">CASE STUDIES</span>
-                    </h1>
-                </div>
-                <div className="w-[120px] md:w-8"></div>
             </header>
 
             <div className="mx-auto max-w-7xl px-6">
-                <div className="mb-16 space-y-6 text-center">
+                <div className="mb-8 space-y-6 text-center">
                     <div className="flex items-center justify-center gap-4">
                         <div className="h-px w-12 bg-primary/20"></div>
                         <span className="text-[10px] font-bold uppercase tracking-[0.8em] text-primary">The Evidence</span>
@@ -160,9 +155,9 @@ const BeforeAfterPage: React.FC = memo(() => {
                         “Real beauty is a science. Every transformation documented here is a result of precise clinical methodology and skin dedication.”
                     </p>
                     <div className="pt-10">
-                        <button onClick={openTreatments} className="btn-85 px-12">
+                        <GlossyButton onClick={openTreatments}>
                             Start your ritual
-                        </button>
+                        </GlossyButton>
                     </div>
                 </div>
             </div>
