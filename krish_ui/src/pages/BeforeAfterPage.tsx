@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useState } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSEO } from '../hooks/useSEO';
 import { useBeforeAfterCases } from '../hooks/useBeforeAfterCases';
@@ -7,6 +7,11 @@ const BeforeAfterPage: React.FC = memo(() => {
     const navigate = useNavigate();
     const [filter, setFilter] = useState<string>('all');
     const { cases, loading } = useBeforeAfterCases();
+    const handleBack = useCallback(() => navigate(-1), [navigate]);
+    const handleCategoryChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
+        setFilter(event.target.value);
+    }, []);
+    const openTreatments = useCallback(() => navigate('/treatments'), [navigate]);
 
     useSEO({
         title: 'Clinical Transformations - Real Results',
@@ -37,7 +42,7 @@ const BeforeAfterPage: React.FC = memo(() => {
         <section className="min-h-screen bg-[#f8f2ea] pt-24 pb-24 selection:bg-primary/30 sm:pt-28">
             <header className="fixed left-0 right-0 top-0 z-50 flex h-16 items-center border-b border-white/5 bg-[#1d1915] px-6 shadow-2xl backdrop-blur-md">
                 <button
-                    onClick={() => navigate(-1)}
+                    onClick={handleBack}
                     className="group flex items-center gap-2 text-white transition-all hover:text-primary"
                 >
                     <span className="material-symbols-outlined transition-transform group-hover:-translate-x-1">arrow_back</span>
@@ -67,7 +72,7 @@ const BeforeAfterPage: React.FC = memo(() => {
                         <div className="relative inline-block w-full max-w-xs">
                             <select
                                 value={filter}
-                                onChange={(e) => setFilter(e.target.value)}
+                                onChange={handleCategoryChange}
                                 className="w-full appearance-none rounded-2xl border-2 border-primary/20 bg-white px-6 py-4 text-sm font-bold text-[#1a1a1a] shadow-lg transition-all focus:border-primary focus:outline-none"
                             >
                                 <option value="all">View All Results</option>
@@ -155,7 +160,7 @@ const BeforeAfterPage: React.FC = memo(() => {
                         “Real beauty is a science. Every transformation documented here is a result of precise clinical methodology and skin dedication.”
                     </p>
                     <div className="pt-10">
-                        <button onClick={() => navigate('/treatments')} className="btn-85 px-12">
+                        <button onClick={openTreatments} className="btn-85 px-12">
                             Start your ritual
                         </button>
                     </div>

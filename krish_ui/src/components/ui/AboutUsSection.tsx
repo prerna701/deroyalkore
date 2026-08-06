@@ -3,8 +3,10 @@ import { UI_STRINGS } from '../../constants/uiContent';
 import GlossyButton from './GlossyButton';
 import { apiClient } from '../../services/apiClient';
 import type { SiteAbout } from '../../types';
+import { useNavigate } from 'react-router-dom';
 
-const AboutUsSection: React.FC = memo(() => {
+const AboutUsSection: React.FC<{ hideButton?: boolean }> = memo(({ hideButton = false }) => {
+    const navigate = useNavigate();
     const { aboutSection } = UI_STRINGS;
     const [content, setContent] = useState<SiteAbout | null>(null);
 
@@ -53,9 +55,11 @@ const AboutUsSection: React.FC = memo(() => {
                     </div>
 
                     {/* Premium Button */}
-                    <GlossyButton className="text-xs">
-                        {activeContent.buttonText}
-                    </GlossyButton>
+                    {!hideButton && (
+                        <GlossyButton className="text-xs" onClick={() => navigate('/about')}>
+                            {activeContent.buttonText}
+                        </GlossyButton>
+                    )}
                 </div>
 
                 {/* Left Side: Image Grid with Experience Badge */}

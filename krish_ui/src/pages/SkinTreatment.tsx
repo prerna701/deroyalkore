@@ -7,7 +7,7 @@ import BeforeAfter from '../components/ui/BeforeAfter';
 import GlossyButton from '../components/ui/GlossyButton';
 import { apiClient } from '../services/apiClient';
 import { Treatment } from '../types';
-import { treatmentsData } from '../data/treatmentsData';
+import toast from 'react-hot-toast';
 
 const SkinTreatment: React.FC = memo(() => {
     const { id } = useParams<{ id: string }>();
@@ -24,7 +24,7 @@ const SkinTreatment: React.FC = memo(() => {
             .then(data => setTreatment(data))
             .catch(err => {
                 console.error(err);
-                setTreatment(treatmentsData[id] ?? null);
+                setTreatment(null);
             })
             .finally(() => setLoading(false));
     }, [id]);
@@ -39,6 +39,8 @@ const SkinTreatment: React.FC = memo(() => {
         phone: '',
         email: ''
     });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitError, setSubmitError] = useState('');
 
     useSEO({
         title: treatment?.title || 'Treatment Details',
@@ -47,22 +49,64 @@ const SkinTreatment: React.FC = memo(() => {
 
     const handleBack = useCallback(() => {
         if (step === 0) {
-            navigate('/treatments');
+            if (window.history.state && window.history.state.idx > 0) {
+                navigate(-1);
+            } else {
+                navigate('/treatments');
+            }
         } else {
             setStep((s) => s - 1);
         }
     }, [step, navigate]);
 
-    const handleContinue = useCallback(() => {
+    const handleContinue = useCallback(async () => {
         if (step < 2) {
             setStep((s) => s + 1);
-        } else {
-            if (formData.name && formData.phone) {
-                setUserData(formData);
-                navigate('/confirmation', { state: { treatmentId: id } });
-            }
+            return;
         }
-    }, [step, formData, setUserData, navigate, id]);
+
+        if (!formData.name || !formData.name.trim()) {
+            toast.error('Please enter your full name');
+            return;
+        }
+
+        if (!formData.phone || !/^\d{10}$/.test(formData.phone.trim())) {
+            toast.error('Please enter a valid 10-digit phone number');
+            return;
+        }
+
+        if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+            toast.error('Please enter a valid email address');
+            return;
+        }
+
+        setIsSubmitting(true);
+        setSubmitError('');
+
+        try {
+            const dateStr = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(selectedDate).padStart(2, '0')}`;
+            await apiClient.createAppointment({
+                name: formData.name,
+                phone: formData.phone,
+                email: formData.email,
+                treatmentId: id,
+                treatmentName: treatment?.title,
+                preferredDate: dateStr,
+                preferredTime: selectedTime,
+                message: `Requested consultation for ${treatment?.title}`,
+            });
+
+            setUserData(formData);
+            toast.success('Your appointment has been successfully booked!');
+            navigate('/confirmation', { state: { treatment: treatment, date: dateStr, time: selectedTime } });
+        } catch (error: any) {
+            const errorMsg = error?.message || 'Unable to book appointment right now.';
+            setSubmitError(errorMsg);
+            toast.error(errorMsg);
+        } finally {
+            setIsSubmitting(false);
+        }
+    }, [step, formData, setUserData, navigate, id, treatment?.title, selectedTime]);
 
     const handleStepOne = useCallback(() => setStep(1), []);
 
@@ -244,7 +288,7 @@ const SkinTreatment: React.FC = memo(() => {
                         <div className="relative z-10 w-full md:w-auto flex justify-center md:justify-end">
                             <GlossyButton
                                 onClick={handleStepOne}
-                                className="w-full sm:w-auto min-w-[220px] shadow-[0_10px_40px_rgba(217,165,119,0.3)] !bg-[#D9A577] hover:!bg-[#c28d5e] !text-[#3A2D23]"
+                                className="w-full sm:w-auto min-w-[220px] shadow-[0_10px_40px_rgba(217,165,119,0.3)] !bg-[#D9A577] hover:!bg-[#c28d5e] !text-[#ffffff]"
                             >
                                 Book Consultation
                             </GlossyButton>
@@ -257,7 +301,7 @@ const SkinTreatment: React.FC = memo(() => {
 
     // STEP 1 and 2: The Booking Wizard
     return (
-        <div className="bg-background-dark text-white h-screen flex flex-col selection:bg-primary/30 overflow-hidden relative z-[100] fixed inset-0">
+        <div className="bg-background-dark text-white h-screen flex flex-col selection:bg-primary/30 overflow-hidden fixed inset-0 z-[100]">
             <header className="flex items-center bg-background-dark p-3 border-b border-white/5 h-14 shrink-0 px-6">
                 <button
                     onClick={handleBack}
@@ -353,6 +397,7 @@ const SkinTreatment: React.FC = memo(() => {
                                         placeholder="your@email.com"
                                         type="email"
                                     />
+                                    {submitError && <p className="text-sm text-red-400">{submitError}</p>}
                                 </div>
                             </div>
                         </div>
@@ -371,11 +416,11 @@ const SkinTreatment: React.FC = memo(() => {
                     </div>
                     <button
                         onClick={handleContinue}
-                        disabled={step === 2 && (!formData.name || !formData.phone)}
-                        className={`btn-85 flex-1 max-w-[320px] shadow-2xl cursor-pointer ${step === 2 && (!formData.name || !formData.phone) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        disabled={isSubmitting || (step === 2 && (!formData.name || !formData.phone))}
+                        className={`btn-85 flex-1 max-w-[320px] shadow-2xl cursor-pointer ${isSubmitting || (step === 2 && (!formData.name || !formData.phone)) ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
-                        <span className="tracking-[0.3em] ml-[0.3em]">{step === 1 ? bUi.footer.nextStep : bUi.footer.confirm}</span>
-                        <span className="material-symbols-outlined text-xl md:text-2xl">{step === 1 ? 'arrow_forward' : 'check_circle'}</span>
+                        <span className="tracking-[0.3em] ml-[0.3em]">{isSubmitting ? 'Booking...' : (step === 1 ? bUi.footer.nextStep : bUi.footer.confirm)}</span>
+                        <span className="material-symbols-outlined text-xl md:text-2xl">{isSubmitting ? 'hourglass_top' : (step === 1 ? 'arrow_forward' : 'check_circle')}</span>
                     </button>
                 </div>
             </div>

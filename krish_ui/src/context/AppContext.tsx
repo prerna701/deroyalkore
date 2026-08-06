@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, type ReactNode } from 'react';
+import React, { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
 
 interface UserData {
     name: string;
@@ -18,16 +18,18 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [selectedTreatmentId, setSelectedTreatmentId] = useState<string | null>(null);
     const [userData, setUserData] = useState<UserData | null>(null);
+    const value = useMemo(
+        () => ({
+            selectedTreatmentId,
+            setSelectedTreatmentId,
+            userData,
+            setUserData,
+        }),
+        [selectedTreatmentId, userData],
+    );
 
     return (
-        <AppContext.Provider
-            value={{
-                selectedTreatmentId,
-                setSelectedTreatmentId,
-                userData,
-                setUserData,
-            }}
-        >
+        <AppContext.Provider value={value}>
             {children}
         </AppContext.Provider>
     );

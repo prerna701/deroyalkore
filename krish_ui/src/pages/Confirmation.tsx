@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { treatmentsData } from '../data/treatmentsData';
 import { useAppContext } from '../context/AppContext';
 import { useSEO } from '../hooks/useSEO';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import GlossyButton from '../components/ui/GlossyButton';
+import toast from 'react-hot-toast';
 
 const Confirmation: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { userData } = useAppContext();
 
-    // Get treatmentId from navigation state
-    const treatmentId = (location.state as any)?.treatmentId;
-    const treatment = treatmentId ? treatmentsData[treatmentId] : null;
+    const treatment = (location.state as any)?.treatment || null;
+    const date = (location.state as any)?.date || 'TBD';
+    const time = (location.state as any)?.time || 'TBD';
 
     const [showReceipt, setShowReceipt] = useState(false);
 
@@ -23,6 +26,32 @@ const Confirmation: React.FC = () => {
     const onBackToHome = () => navigate('/');
 
     const bookingId = "AUR-" + Math.random().toString(36).substr(2, 6).toUpperCase();
+
+    const handleDownloadReceipt = () => {
+        const receiptElement = document.getElementById('receipt-content');
+        if (!receiptElement) {
+            toast.error('Receipt content not found');
+            return;
+        }
+        
+        toast.promise(
+            (async () => {
+                const canvas = await html2canvas(receiptElement, { backgroundColor: '#1A1712', scale: 2, useCORS: true });
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+                
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save(`receipt-${bookingId}.pdf`);
+            })(),
+            {
+                loading: 'Generating PDF receipt...',
+                success: 'Receipt downloaded successfully!',
+                error: 'Failed to generate PDF receipt',
+            }
+        );
+    };
 
     return (
         <div className="bg-background-dark text-white h-screen flex flex-col overflow-hidden selection:bg-primary/30 relative">
@@ -83,27 +112,25 @@ const Confirmation: React.FC = () => {
 
                         {/* Date/Time Row */}
                         <div className="grid grid-cols-2 gap-3">
-                            <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-4 text-center">
-                                <span className="material-symbols-outlined text-primary text-base mb-1">calendar_month</span>
-                                <p className="text-white font-bold text-[9px] uppercase tracking-widest">Oct 24</p>
+                            <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-4 text-center shadow-md">
+                                <span className="material-symbols-outlined text-[#D9A577] text-xl mb-1">calendar_month</span>
+                                <p className="text-white font-bold text-[10px] uppercase tracking-widest">{date}</p>
                             </div>
-                            <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-4 text-center">
-                                <span className="material-symbols-outlined text-primary text-base mb-1">schedule</span>
-                                <p className="text-white font-bold text-[9px] uppercase tracking-widest">2:30 PM</p>
+                            <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-4 text-center shadow-md">
+                                <span className="material-symbols-outlined text-[#D9A577] text-xl mb-1">schedule</span>
+                                <p className="text-white font-bold text-[10px] uppercase tracking-widest">{time}</p>
                             </div>
                         </div>
 
                         {/* Download Receipt Card */}
-                        <button
-                            onClick={() => setShowReceipt(true)}
-                            className="bg-primary/10 border border-primary/20 rounded-2xl p-4 flex items-center justify-between group hover:bg-primary transition-all duration-500 hover:text-[#0D0B08]"
-                        >
-                            <div className="flex items-center gap-3">
-                                <span className="material-symbols-outlined text-lg">receipt_long</span>
-                                <span className="text-[9px] font-bold uppercase tracking-[0.2em]">Download Receipt</span>
-                            </div>
-                            <span className="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1">download</span>
-                        </button>
+                        <div className="mt-2">
+                            <GlossyButton onClick={() => setShowReceipt(true)} className="w-full flex items-center justify-between !py-4 !min-h-[50px] !px-6">
+                                <div className="flex items-center gap-3">
+                                    <span className="material-symbols-outlined text-xl">receipt_long</span>
+                                    <span className="text-[11px] uppercase tracking-[0.2em]">View Receipt</span>
+                                </div>
+                            </GlossyButton>
+                        </div>
 
                         <div className="flex-1 hidden md:block"></div>
                     </div>
@@ -129,36 +156,19 @@ const Confirmation: React.FC = () => {
                 </div>
             </main>
 
-            {/* Bottom Toolbar - Relocated Buttons */}
-            <div className="bg-[#14120F] border-t border-white/10 p-4 md:p-6 px-10 shrink-0 flex items-center justify-between h-24 md:h-28 z-40">
-                <div className="flex gap-4 w-full max-w-5xl mx-auto">
-                    <button className="flex-1 btn-85 flex items-center justify-center gap-3">
-                        <span className="material-symbols-outlined text-lg">calendar_add_on</span>
-                        <span>Calendar</span>
-                    </button>
-                    <button
-                        onClick={onBackToHome}
-                        className="flex-1 btn-85 flex items-center justify-center gap-3"
-                    >
-                        <span className="material-symbols-outlined text-lg">home</span>
-                        <span>Home</span>
-                    </button>
-                </div>
-            </div>
-
             {/* Receipt Modal Overlay */}
             {showReceipt && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-in fade-in duration-500">
                     <div className="absolute inset-0 bg-[#0D0B08]/90 backdrop-blur-lg" onClick={() => setShowReceipt(false)}></div>
-                    <div className="relative bg-[#1A1712] border border-white/10 w-full max-w-md rounded-[3rem] p-10 md:p-14 shadow-4xl animate-in zoom-in-95 duration-500">
+                    <div className="relative bg-[#1A1712] border border-white/10 w-full max-w-md rounded-[3rem] p-10 md:p-14 shadow-4xl animate-in zoom-in-95 duration-500 overflow-y-auto max-h-[90vh]">
                         <button
                             onClick={() => setShowReceipt(false)}
-                            className="absolute top-8 right-8 text-white/20 hover:text-white transition-colors"
+                            className="absolute top-8 right-8 text-white/20 hover:text-white transition-colors z-10"
                         >
                             <span className="material-symbols-outlined text-2xl">close</span>
                         </button>
 
-                        <div className="text-center space-y-8">
+                        <div id="receipt-content" className="text-center space-y-8 bg-[#1A1712] p-4 rounded-xl">
                             <div className="space-y-2">
                                 <h1 className="text-3xl font-bold tracking-[0.2em] text-primary">AURUM</h1>
                                 <p className="text-[10px] text-white/30 uppercase tracking-[0.5em]">Official Transaction Receipt</p>
@@ -187,7 +197,7 @@ const Confirmation: React.FC = () => {
                                 </div>
                                 <div className="flex justify-between items-baseline">
                                     <span className="text-[9px] text-white/20 uppercase font-bold tracking-widest">DateTime</span>
-                                    <span className="text-sm text-white">Oct 24 • 2:30 PM</span>
+                                    <span className="text-sm text-white">{date} • {time}</span>
                                 </div>
                                 <div className="flex justify-between items-baseline">
                                     <span className="text-[9px] text-white/20 uppercase font-bold tracking-widest">Total paid</span>
@@ -206,33 +216,17 @@ const Confirmation: React.FC = () => {
                                         ))}
                                     </div>
                                 </div>
-                                <button
-                                    className="btn-85 w-full"
-                                    onClick={() => window.print()}
+                                <GlossyButton
+                                    className="w-full !min-h-[50px] !py-3"
+                                    onClick={handleDownloadReceipt}
                                 >
-                                    Print Receipt
-                                </button>
+                                    Download Receipt
+                                </GlossyButton>
                             </div>
                         </div>
                     </div>
                 </div>
             )}
-
-            {/* Minimal Mobile Nav */}
-            <nav className="shrink-0 bg-[#0D0B08] border-t border-white/5 px-6 pb-6 pt-2 md:hidden">
-                <div className="flex gap-4 max-w-[500px] mx-auto items-center justify-between">
-                    {[
-                        { label: 'Home', icon: 'home', active: false, action: onBackToHome },
-                        { label: 'Status', icon: 'verified', active: true, inner: true },
-                        { label: 'Profile', icon: 'person', active: false }
-                    ].map((item, i) => (
-                        <button key={i} onClick={item.action} className={`flex flex-col items-center justify-center gap-1 ${item.active ? 'text-primary' : 'text-white/20'}`}>
-                            <span className="material-symbols-outlined text-lg">{item.icon}</span>
-                            <span className="text-[6px] font-bold uppercase tracking-[0.2em]">{item.label}</span>
-                        </button>
-                    ))}
-                </div>
-            </nav>
         </div>
     );
 };

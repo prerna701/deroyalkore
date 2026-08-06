@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTreatments } from '../hooks/useTreatments';
 import { useSEO } from '../hooks/useSEO';
@@ -6,6 +6,10 @@ import { useSEO } from '../hooks/useSEO';
 const TreatmentsList: React.FC = () => {
     const navigate = useNavigate();
     const { treatments, loading } = useTreatments();
+    const openTreatment = useCallback(
+        (treatmentId: string) => navigate(`/treatment/${treatmentId}`),
+        [navigate],
+    );
 
     useSEO({
         title: 'Premium Treatments',
@@ -34,7 +38,7 @@ const TreatmentsList: React.FC = () => {
                     {treatments.map((treatment) => (
                         <div
                             key={treatment._id || treatment.id || treatment.slug}
-                            onClick={() => navigate(`/treatment/${treatment.slug || treatment.id || treatment._id}`)}
+                            onClick={() => openTreatment(treatment.slug || treatment.id || treatment._id || '')}
                             className="group cursor-pointer bg-white rounded-3xl overflow-hidden shadow-lg border border-[#E7D8BF] transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl flex flex-col"
                         >
                             {/* Image Container */}

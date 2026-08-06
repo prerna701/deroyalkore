@@ -1,12 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSEO } from '../hooks/useSEO';
-import { treatmentsData } from '../data/treatmentsData';
 import GlossyButton from '../components/ui/GlossyButton';
 
 const OffersPage: React.FC = () => {
     const navigate = useNavigate();
-    const koreanGlassSkin = treatmentsData['korean-glass-skin'];
 
     useSEO({
         title: 'Exclusive Offers',
@@ -37,7 +35,7 @@ const OffersPage: React.FC = () => {
                         {/* Image Section */}
                         <div className="lg:w-1/2 relative min-h-[300px] lg:min-h-full">
                             <img 
-                                src={koreanGlassSkin?.image || "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&q=80"}
+                                src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&q=80"
                                 alt="Korean Glass Skin Treatment"
                                 className="absolute inset-0 w-full h-full object-cover rounded-t-[2rem] lg:rounded-l-[2rem] lg:rounded-tr-none"
                             />

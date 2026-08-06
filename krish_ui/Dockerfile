@@ -14,6 +14,7 @@ RUN npm run build
 
 FROM node:24-alpine
 
+ENV NODE_ENV=production
 WORKDIR /usr/src/app
 
 RUN apk add --no-cache bash && npm install -g serve

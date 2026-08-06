@@ -233,5 +233,32 @@ export const apiClient = {
             headers: getHeaders()
         });
         return handleResponse(response);
+    },
+
+    createAppointment: async (payload: any) => {
+        const response = await fetch(`${BASE_URL}/appointments`, {
+            method: 'POST',
+            headers: getHeaders(),
+            body: JSON.stringify(payload)
+        });
+        return handleResponse(response);
+    },
+
+    getAppointments: async () => {
+        const response = await fetch(`${BASE_URL}/appointments?t=${Date.now()}`, {
+            method: 'GET',
+            headers: getHeaders(),
+            cache: 'no-store'
+        });
+        return handleResponse(response);
+    },
+
+    updateAppointmentStatus: async (id: string, status: string) => {
+        const response = await fetch(`${BASE_URL}/appointments/${id}/status`, {
+            method: 'PATCH',
+            headers: getHeaders(),
+            body: JSON.stringify({ status })
+        });
+        return handleResponse(response);
     }
 };

@@ -64,11 +64,25 @@ const AdminDashboard: React.FC = () => {
 
     // Sidebar State
     const [activeTab, setActiveTab] = useState('before-after');
+    const [appointments, setAppointments] = useState<any[]>([]);
+    const [appointmentsLoading, setAppointmentsLoading] = useState(false);
 
     // Upload State
     const [cases, dispatch] = useReducer(formReducer, initialCases);
     const [status, setStatus] = useState('');
     const [existingCategories, setExistingCategories] = useState<string[]>([]);
+
+    const loadAppointments = async () => {
+        setAppointmentsLoading(true);
+        try {
+            const data = await apiClient.getAppointments();
+            setAppointments(Array.isArray(data) ? data : []);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setAppointmentsLoading(false);
+        }
+    };
 
     useEffect(() => {
         if (token && isAdmin) {
@@ -83,6 +97,12 @@ const AdminDashboard: React.FC = () => {
                     defaultCategory: cats[0] || '',
                 });
             }).catch(console.error);
+        }
+    }, [token, isAdmin]);
+
+    useEffect(() => {
+        if (token && isAdmin) {
+            void loadAppointments();
         }
     }, [token, isAdmin]);
 
@@ -222,6 +242,12 @@ const AdminDashboard: React.FC = () => {
                         Treatments
                     </button>
                     <button 
+                        className={`text-left p-3 rounded transition-colors ${activeTab === 'appointments' ? 'bg-[#4a3f36]' : 'hover:bg-[#3a312a]'}`}
+                        onClick={() => setActiveTab('appointments')}
+                    >
+                        Appointments
+                    </button>
+                    <button 
                         className={`text-left p-3 rounded transition-colors ${activeTab === 'site-content' ? 'bg-[#4a3f36]' : 'hover:bg-[#3a312a]'}`}
                         onClick={() => setActiveTab('site-content')}
                     >
@@ -284,6 +310,11 @@ const AdminDashboard: React.FC = () => {
                                 <h3 className="text-xl font-bold text-gray-800">Site Content</h3>
                                 <p className="text-sm text-gray-500 mt-2">Manage about, contact, and clinic gallery sections.</p>
                             </div>
+                            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-center items-center text-center cursor-pointer hover:shadow-md transition-shadow" onClick={() => setActiveTab('appointments')}>
+                                <span className="material-symbols-outlined text-4xl text-[#D9A577] mb-3">calendar_month</span>
+                                <h3 className="text-xl font-bold text-gray-800">Appointments</h3>
+                                <p className="text-sm text-gray-500 mt-2">View and manage client appointment requests.</p>
+                            </div>
                         </div>
                     </div>
                 )}
@@ -298,6 +329,46 @@ const AdminDashboard: React.FC = () => {
 
                 {activeTab === 'site-content' && (
                     <AdminSiteContent />
+                )}
+
+                {activeTab === 'appointments' && (
+                    <div className="max-w-6xl bg-white p-8 rounded-lg shadow-sm border border-gray-200">
+                        <div className="flex justify-between items-center mb-6 border-b pb-4">
+                            <h2 className="text-2xl font-bold text-gray-800">Appointment Requests</h2>
+                            <button onClick={() => void loadAppointments()} className="rounded-full border border-[#E7D8BF] px-4 py-2 text-sm font-semibold text-[#3A2D23]">Refresh</button>
+                        </div>
+                        {appointmentsLoading ? <p className="text-gray-500">Loading appointments...</p> : appointments.length === 0 ? <p className="text-gray-500">No appointment requests yet.</p> : (
+                            <div className="overflow-x-auto">
+                                <table className="min-w-full divide-y divide-gray-200 text-sm">
+                                    <thead className="bg-gray-50">
+                                        <tr>
+                                            <th className="px-4 py-3 text-left">Client</th>
+                                            <th className="px-4 py-3 text-left">Phone</th>
+                                            <th className="px-4 py-3 text-left">Treatment</th>
+                                            <th className="px-4 py-3 text-left">Preferred Slot</th>
+                                            <th className="px-4 py-3 text-left">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-100">
+                                        {appointments.map((appointment) => (
+                                            <tr key={appointment.id} className="hover:bg-gray-50">
+                                                <td className="px-4 py-3">
+                                                    <div className="font-semibold text-gray-900">{appointment.name}</div>
+                                                    <div className="text-gray-500">{appointment.email}</div>
+                                                </td>
+                                                <td className="px-4 py-3 text-gray-700">{appointment.phone}</td>
+                                                <td className="px-4 py-3 text-gray-700">{appointment.treatmentName || appointment.treatmentId}</td>
+                                                <td className="px-4 py-3 text-gray-700">{appointment.preferredDate} · {appointment.preferredTime}</td>
+                                                <td className="px-4 py-3">
+                                                    <span className="rounded-full bg-[#F2E9D8] px-3 py-1 text-xs font-semibold uppercase tracking-wide text-[#3A2D23]">{appointment.status}</span>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                    </div>
                 )}
 
                 {activeTab === 'before-after' && (

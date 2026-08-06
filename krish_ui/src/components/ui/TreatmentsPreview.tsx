@@ -1,5 +1,5 @@
 import React from 'react';
-import { treatmentsData } from '../../data/treatmentsData';
+import { useTreatments } from '../../hooks/useTreatments';
 import GlossyButton from './GlossyButton';
 
 interface TreatmentsPreviewProps {
@@ -8,8 +8,11 @@ interface TreatmentsPreviewProps {
 }
 
 const TreatmentsPreview: React.FC<TreatmentsPreviewProps> = ({ onSelect, onViewAll }) => {
-    // Convert to array and filter out any potential nulls
-    const treatments = Object.values(treatmentsData || {}).filter(t => t && t.id);
+    const { treatments, loading } = useTreatments();
+
+    if (loading) {
+        return <div className="text-center text-white/50 py-10">Loading treatments...</div>;
+    }
 
     return (
         <section className="relative overflow-hidden bg-[#050403] py-28">

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { getFaqs, type FAQItem } from '../../services/faqService';
 
 const FAQSection: React.FC = () => {
@@ -7,26 +7,26 @@ const FAQSection: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const loadFaqs = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-        const response = await getFaqs(1, 10);
-        setFaqData(response.data || []);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unable to load FAQs');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadFaqs();
+  const loadFaqs = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const response = await getFaqs(1, 10);
+      setFaqData(response.data || []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unable to load FAQs');
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
-  const toggleFAQ = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
+  useEffect(() => {
+    void loadFaqs();
+  }, [loadFaqs]);
+
+  const toggleFAQ = useCallback((index: number) => {
+    setOpenIndex((current) => (current === index ? null : index));
+  }, []);
 
   return (
     <section className="flex min-h-screen items-center bg-cream px-6 py-12 sm:min-h-[100svh] lg:py-16">
@@ -67,16 +67,19 @@ const FAQSection: React.FC = () => {
                   onClick={() => toggleFAQ(index)}
                   className={`w-full flex items-center justify-between gap-4 p-4 text-left transition-all duration-300 md:p-5 ${isOpen
                       ? 'bg-slate-950 text-primary'
-                      : 'bg-cream/50 text-slate-950 hover:bg-cream'
+                      : 'bg-cream/50 text-black hover:bg-cream'
                     }`}
                 >
-                  <span className="font-bold text-sm md:text-base tracking-tight">
-                    {item.question}
-                  </span>
-
+                <span
+               className={`font-bold text-sm md:text-base tracking-tight ${
+               isOpen ? 'text-white' : 'text-black group-hover:text-white'
+  }`}
+>
+  {item.question}
+</span>
                   {/* Chevron Icon */}
                   <svg
-                    className={`w-5 h-5 transition-transform duration-300 ${isOpen ? 'rotate-180 text-primary' : 'text-gray-400'}`}
+                    className={`w-5 h-5 transition-transform duration-300 ${isOpen ? 'rotate-180 text-primary' : 'text-black'}`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
