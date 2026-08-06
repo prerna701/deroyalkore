@@ -21,7 +21,6 @@ RUN apk add --no-cache bash && npm install -g serve
 
 COPY package*.json ./
 COPY tsconfig.json ./
-COPY --from=builder /usr/src/app/node_modules ./node_modules
 COPY --from=builder /usr/src/app/dist ./dist
 COPY wait-for-it.sh /opt/wait-for-it.sh
 
