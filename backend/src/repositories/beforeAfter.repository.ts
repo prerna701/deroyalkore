@@ -1,6 +1,5 @@
-import fs from 'fs';
-import path from 'path';
 import { randomUUID } from 'crypto';
+import { getCollection } from '../config/mongo';
 
 export interface BeforeAfterCaseRecord {
   id: string;
@@ -19,18 +18,12 @@ export interface CreateBeforeAfterCaseInput {
   afterPath: string;
 }
 
-const dataDir = path.join(process.cwd(), 'data');
-const dataFile = path.join(dataDir, 'before-after-cases.json');
+const COLLECTION_NAME = 'beforeAfterCases';
 
 class BeforeAfterRepository {
-  private cases: BeforeAfterCaseRecord[] = [];
-
-  constructor() {
-    this.load();
-  }
-
   async findAll(): Promise<BeforeAfterCaseRecord[]> {
-    return [...this.cases].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    const collection = await getCollection<BeforeAfterCaseRecord>(COLLECTION_NAME);
+    return collection.find({}, { projection: { _id: 0 } }).sort({ createdAt: -1 }).toArray();
   }
 
   async create(input: CreateBeforeAfterCaseInput): Promise<BeforeAfterCaseRecord> {
@@ -45,28 +38,9 @@ class BeforeAfterRepository {
       updatedAt: now,
     };
 
-    this.cases.push(record);
-    await this.save();
-
+    const collection = await getCollection<BeforeAfterCaseRecord>(COLLECTION_NAME);
+    await collection.insertOne(record as BeforeAfterCaseRecord);
     return record;
-  }
-
-  private load() {
-    fs.mkdirSync(dataDir, { recursive: true });
-
-    if (!fs.existsSync(dataFile)) {
-      this.cases = [];
-      return;
-    }
-
-    const raw = fs.readFileSync(dataFile, 'utf8');
-    const parsed = JSON.parse(raw) as BeforeAfterCaseRecord[];
-    this.cases = Array.isArray(parsed) ? parsed : [];
-  }
-
-  private async save() {
-    await fs.promises.mkdir(dataDir, { recursive: true });
-    await fs.promises.writeFile(dataFile, JSON.stringify(this.cases, null, 2), 'utf8');
   }
 }
 

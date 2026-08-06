@@ -1,6 +1,5 @@
-import fs from 'fs';
-import path from 'path';
 import { randomUUID } from 'crypto';
+import { getCollection } from '../config/mongo';
 
 export interface GalleryRecord {
   id: string;
@@ -36,37 +35,17 @@ export interface UpdateGalleryInput {
   images?: GalleryImage[];
 }
 
-const dataDir = path.join(process.cwd(), 'data');
-const dataFile = path.join(dataDir, 'gallery.json');
-
-const defaultGallery: CreateGalleryInput = {
-  title: 'Clinical',
-  titleSuffix: 'Gallery',
-  subtitle: 'Experience The Luxury',
-  note: 'World-Class Infrastructure - Advanced Skin Technology - Luxury Care',
-  images: [
-    { id: randomUUID(), url: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&q=80', title: 'Modern Consultation Room', sortOrder: 1 },
-    { id: randomUUID(), url: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80', title: 'Advanced Treatment Suite', sortOrder: 2 },
-    { id: randomUUID(), url: 'https://images.unsplash.com/photo-1586773860418-d3b9a8ec862e?auto=format&fit=crop&q=80', title: 'Luxury Reception', sortOrder: 3 },
-    { id: randomUUID(), url: 'https://images.unsplash.com/photo-1600334129128-ec85758fd30d?auto=format&fit=crop&q=80', title: 'Waitng Lounge', sortOrder: 4 },
-    { id: randomUUID(), url: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80', title: 'Sterile Procedure Room', sortOrder: 5 },
-    { id: randomUUID(), url: 'https://images.unsplash.com/photo-1631217812030-802525166299?auto=format&fit=crop&q=80', title: 'Laser Technology Booth', sortOrder: 6 },
-  ],
-};
+const COLLECTION_NAME = 'galleries';
 
 class GalleryRepository {
-  private records: GalleryRecord[] = [];
-
-  constructor() {
-    this.load();
-  }
-
   async findAll(): Promise<GalleryRecord[]> {
-    return [...this.records].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+    const collection = await getCollection<GalleryRecord>(COLLECTION_NAME);
+    return collection.find({}, { projection: { _id: 0 } }).sort({ updatedAt: -1 }).toArray();
   }
 
   async findById(id: string): Promise<GalleryRecord | undefined> {
-    return this.records.find((record) => record.id === id);
+    const collection = await getCollection<GalleryRecord>(COLLECTION_NAME);
+    return collection.findOne({ id }, { projection: { _id: 0 } }) as Promise<GalleryRecord | undefined>;
   }
 
   async create(input: CreateGalleryInput): Promise<GalleryRecord> {
@@ -78,70 +57,30 @@ class GalleryRepository {
       updatedAt: now,
     };
 
-    this.records.unshift(record);
-    await this.save();
+    const collection = await getCollection<GalleryRecord>(COLLECTION_NAME);
+    await collection.insertOne(record as GalleryRecord);
     return record;
   }
 
   async update(id: string, input: UpdateGalleryInput): Promise<GalleryRecord | undefined> {
-    const index = this.records.findIndex((record) => record.id === id);
-    if (index === -1) return undefined;
+    const collection = await getCollection<GalleryRecord>(COLLECTION_NAME);
+    const updatePayload = Object.fromEntries(
+      Object.entries(input).filter(([, value]) => value !== undefined),
+    ) as Partial<GalleryRecord>;
 
-    const updatedRecord: GalleryRecord = {
-      ...this.records[index],
-      ...input,
-      updatedAt: new Date().toISOString(),
-    };
+    const result = await collection.findOneAndUpdate(
+      { id },
+      { $set: { ...updatePayload, updatedAt: new Date().toISOString() } },
+      { returnDocument: 'after', projection: { _id: 0 } },
+    );
 
-    this.records[index] = updatedRecord;
-    await this.save();
-    return updatedRecord;
+    return result as GalleryRecord | undefined;
   }
 
   async delete(id: string): Promise<boolean> {
-    const initialLength = this.records.length;
-    this.records = this.records.filter((record) => record.id !== id);
-
-    if (this.records.length < initialLength) {
-      await this.save();
-      return true;
-    }
-
-    return false;
-  }
-
-  private createDefaultRecord(): GalleryRecord {
-    const now = new Date().toISOString();
-    return {
-      id: randomUUID(),
-      ...defaultGallery,
-      createdAt: now,
-      updatedAt: now,
-    };
-  }
-
-  private load() {
-    fs.mkdirSync(dataDir, { recursive: true });
-
-    if (!fs.existsSync(dataFile)) {
-      this.records = [this.createDefaultRecord()];
-      fs.writeFileSync(dataFile, JSON.stringify(this.records, null, 2), 'utf8');
-      return;
-    }
-
-    try {
-      const raw = fs.readFileSync(dataFile, 'utf8');
-      const parsed = JSON.parse(raw) as GalleryRecord[];
-      this.records = Array.isArray(parsed) && parsed.length > 0 ? parsed : [this.createDefaultRecord()];
-    } catch (error) {
-      console.error('Failed to parse gallery.json', error);
-      this.records = [this.createDefaultRecord()];
-    }
-  }
-
-  private async save() {
-    await fs.promises.mkdir(dataDir, { recursive: true });
-    await fs.promises.writeFile(dataFile, JSON.stringify(this.records, null, 2), 'utf8');
+    const collection = await getCollection<GalleryRecord>(COLLECTION_NAME);
+    const result = await collection.deleteOne({ id });
+    return result.deletedCount > 0;
   }
 }
 

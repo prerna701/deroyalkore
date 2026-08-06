@@ -2,13 +2,23 @@ import http from 'http';
 import app from './app';
 import { env } from './config/env';
 import { logger } from './utils/logger';
+import { connectToDatabase, closeDatabase } from './config/mongo';
 
 const server = http.createServer(app);
 
-const startServer = (port: number) => {
+const startServer = async (port: number) => {
+  try {
+    await connectToDatabase();
+    logger.info('MongoDB connected successfully');
+  } catch (error) {
+    logger.error('MongoDB connection failed', { error });
+    process.exit(1);
+  }
+
   server.listen(port, () => {
-    logger.info(` Server running in ${env.NODE_ENV} mode on port ${port}`);
-    logger.info(`   API base URL: http://localhost:${port}${env.API_PREFIX}`);
+    logger.info(`Server running in ${env.NODE_ENV} mode on port ${port}`);
+    logger.info(`API base URL: http://0.0.0.0:${port}${env.API_PREFIX}`);
+    logger.info(`Health endpoint: http://0.0.0.0:${port}/healthz`);
   });
 
   server.on('error', (error: NodeJS.ErrnoException) => {
@@ -22,7 +32,7 @@ const startServer = (port: number) => {
   });
 };
 
-startServer(env.PORT);
+void startServer(env.PORT);
 process.on('unhandledRejection', (reason) => {
   logger.error('Unhandled Rejection:', { reason });
   shutdown(1);
@@ -37,8 +47,14 @@ process.on('uncaughtException', (error) => {
 process.on('SIGTERM', () => shutdown(0));
 process.on('SIGINT', () => shutdown(0));
 
-function shutdown(code: number) {
+async function shutdown(code: number) {
   logger.info('Shutting down gracefully...');
+  try {
+    await closeDatabase();
+  } catch {
+    // ignore shutdown cleanup errors
+  }
+
   server.close(() => {
     process.exit(code);
   });

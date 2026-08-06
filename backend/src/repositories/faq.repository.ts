@@ -1,12 +1,14 @@
-import fs from 'fs';
-import path from 'path';
+import { randomUUID } from 'crypto';
 import { PaginationMeta } from '../types/common.types';
 import { buildPaginationMeta } from '../utils/pagination';
+import { getCollection } from '../config/mongo';
 
 export interface FaqRecord {
   id: string;
   question: string;
   answer: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CreateFaqInput {
@@ -32,96 +34,63 @@ export interface FaqRepository {
   delete(id: string): Promise<boolean>;
 }
 
-const dataDir = path.join(process.cwd(), 'data');
-const dataFile = path.join(dataDir, 'faqs.json');
+const COLLECTION_NAME = 'faqs';
 
-class FaqFileRepository implements FaqRepository {
-  private faqs: FaqRecord[] = [];
-
-  constructor() {
-    this.load();
-  }
-
+class FaqMongoRepository implements FaqRepository {
   async create(input: CreateFaqInput): Promise<FaqRecord> {
+    const now = new Date().toISOString();
     const record: FaqRecord = {
-      id: `faq-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      id: `faq-${randomUUID()}`,
       question: input.question.trim(),
       answer: input.answer.trim(),
+      createdAt: now,
+      updatedAt: now,
     };
 
-    this.faqs = [record, ...this.faqs];
-    await this.save();
+    const collection = await getCollection<FaqRecord>(COLLECTION_NAME);
+    await collection.insertOne(record as FaqRecord);
     return record;
   }
 
   async findAllWithPagination(page = 1, limit = 10): Promise<FaqPaginationResult> {
     const safePage = Number.isFinite(page) && page > 0 ? Math.floor(page) : 1;
     const safeLimit = Number.isFinite(limit) && limit > 0 ? Math.floor(limit) : 10;
+    const collection = await getCollection<FaqRecord>(COLLECTION_NAME);
 
-    const totalItems = this.faqs.length;
+    const [items, totalItems] = await Promise.all([
+      collection.find({}, { projection: { _id: 0 } }).sort({ createdAt: -1 }).skip((safePage - 1) * safeLimit).limit(safeLimit).toArray(),
+      collection.countDocuments(),
+    ]);
+
     const meta = buildPaginationMeta(totalItems, safePage, safeLimit);
-    const startIndex = (meta.page - 1) * meta.limit;
-    const endIndex = startIndex + meta.limit;
-
-    return {
-      items: this.faqs.slice(startIndex, endIndex),
-      meta,
-    };
+    return { items, meta };
   }
 
   async findById(id: string): Promise<FaqRecord | null> {
-    return this.faqs.find((item) => item.id === id) ?? null;
+    const collection = await getCollection<FaqRecord>(COLLECTION_NAME);
+    return collection.findOne({ id }, { projection: { _id: 0 } }) as Promise<FaqRecord | null>;
   }
 
   async update(id: string, input: UpdateFaqInput): Promise<FaqRecord | undefined> {
-    const index = this.faqs.findIndex((item) => item.id === id);
-    if (index === -1) return undefined;
+    const collection = await getCollection<FaqRecord>(COLLECTION_NAME);
+    const updatePayload = Object.fromEntries(
+      Object.entries(input).filter(([, value]) => value !== undefined),
+    ) as Partial<FaqRecord>;
 
-    const updatedRecord = {
-      ...this.faqs[index],
-      question: input.question?.trim() ?? this.faqs[index].question,
-      answer: input.answer?.trim() ?? this.faqs[index].answer,
-    };
+    const result = await collection.findOneAndUpdate(
+      { id },
+      { $set: { ...updatePayload, updatedAt: new Date().toISOString() } },
+      { returnDocument: 'after', projection: { _id: 0 } },
+    );
 
-    this.faqs[index] = updatedRecord;
-    await this.save();
-    return updatedRecord;
+    return result as FaqRecord | undefined;
   }
 
   async delete(id: string): Promise<boolean> {
-    const initialLength = this.faqs.length;
-    this.faqs = this.faqs.filter((item) => item.id !== id);
-
-    if (this.faqs.length < initialLength) {
-      await this.save();
-      return true;
-    }
-
-    return false;
-  }
-
-  private load() {
-    fs.mkdirSync(dataDir, { recursive: true });
-
-    if (!fs.existsSync(dataFile)) {
-      this.faqs = [];
-      return;
-    }
-
-    try {
-      const raw = fs.readFileSync(dataFile, 'utf8');
-      const parsed = JSON.parse(raw) as FaqRecord[];
-      this.faqs = Array.isArray(parsed) ? parsed : [];
-    } catch (error) {
-      console.error('Failed to parse faqs.json', error);
-      this.faqs = [];
-    }
-  }
-
-  private async save() {
-    await fs.promises.mkdir(dataDir, { recursive: true });
-    await fs.promises.writeFile(dataFile, JSON.stringify(this.faqs, null, 2), 'utf8');
+    const collection = await getCollection<FaqRecord>(COLLECTION_NAME);
+    const result = await collection.deleteOne({ id });
+    return result.deletedCount > 0;
   }
 }
 
-export const faqRepository = new FaqFileRepository();
+export const faqRepository = new FaqMongoRepository();

@@ -22,6 +22,9 @@ import routes from './routes';
  */
 const app: Application = express();
 
+app.disable('x-powered-by');
+app.set('trust proxy', 1);
+
 // --- Security & core middleware ---
 app.use(requestIdMiddleware);
 app.use(helmet({
@@ -44,6 +47,15 @@ app.use(morgan(env.NODE_ENV === 'development' ? 'dev' : 'combined', { stream: mo
 const prefixes = Array.from(new Set([env.API_PREFIX, env.API_PREFIX === '/v1' ? '/api/v1' : '/v1', '/v1', '/api/v1']));
 prefixes.forEach((prefix) => {
   app.use(prefix, routes);
+});
+
+app.get('/healthz', (_req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    service: 'backend',
+    environment: env.NODE_ENV,
+    timestamp: new Date().toISOString(),
+  });
 });
 
 // --- 404 + centralized error handling (must be LAST) ---

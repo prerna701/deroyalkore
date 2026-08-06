@@ -7,6 +7,8 @@ import faqRoutes from './faq.routes';
 import aboutRoutes from './about.routes';
 import contactRoutes from './contact.routes';
 import galleryRoutes from './gallery.routes';
+import appointmentRoutes from './appointment.routes';
+import mailRoutes from './mail.routes';
 import { ApiResponse } from '../utils/ApiResponse';
 import { requireAdmin } from '../middlewares/requireAdmin';
 
@@ -32,5 +34,7 @@ router.use('/faqs', faqRoutes);
 router.use('/about', aboutRoutes);
 router.use('/contact', contactRoutes);
 router.use('/gallery', galleryRoutes);
+router.use('/appointments', appointmentRoutes);
+router.use('/mail', mailRoutes);
 
 export default router;

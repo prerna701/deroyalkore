@@ -15,6 +15,7 @@ RUN npm run build \
 
 FROM node:24-alpine
 
+ENV NODE_ENV=production
 WORKDIR /usr/src/app
 
 COPY package*.json ./
@@ -35,6 +36,6 @@ USER node
 EXPOSE 7000
 
 HEALTHCHECK --interval=10s --timeout=3s --start-period=15s --retries=5 \
-  CMD node -e "const p=process.env.APP_PORT||7000;require('http').get('http://127.0.0.1:'+p+'/',r=>process.exit(r.statusCode<500?0:1)).on('error',()=>process.exit(1))"
+  CMD node -e "const p=process.env.PORT||7000;require('http').get({hostname:'127.0.0.1',port:p,path:'/healthz',timeout:2000},r=>process.exit(r.statusCode<500?0:1)).on('error',()=>process.exit(1))"
 
 CMD ["node", "dist/server.js"]

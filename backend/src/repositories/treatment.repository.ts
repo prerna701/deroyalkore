@@ -1,6 +1,5 @@
-import fs from 'fs';
-import path from 'path';
 import { randomUUID } from 'crypto';
+import { getCollection } from '../config/mongo';
 
 export interface TreatmentRecord {
   id: string;
@@ -42,9 +41,6 @@ export interface UpdateTreatmentInput {
   image?: string;
 }
 
-const dataDir = path.join(process.cwd(), 'data');
-const dataFile = path.join(dataDir, 'treatments.json');
-
 const slugify = (text: string) => {
   return text
     .toString()
@@ -56,23 +52,25 @@ const slugify = (text: string) => {
     .replace(/-+$/, '');
 };
 
+const COLLECTION_NAME = 'treatments';
+
 class TreatmentRepository {
-  private treatments: TreatmentRecord[] = [];
-
-  constructor() {
-    this.load();
-  }
-
   async findAll(): Promise<TreatmentRecord[]> {
-    return [...this.treatments].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    const collection = await getCollection<TreatmentRecord>(COLLECTION_NAME);
+    return collection
+      .find({}, { projection: { _id: 0 } })
+      .sort({ createdAt: -1 })
+      .toArray();
   }
-  
+
   async findById(id: string): Promise<TreatmentRecord | undefined> {
-    return this.treatments.find(t => t.id === id);
+    const collection = await getCollection<TreatmentRecord>(COLLECTION_NAME);
+    return collection.findOne({ id }, { projection: { _id: 0 } }) as Promise<TreatmentRecord | undefined>;
   }
 
   async findBySlug(slug: string): Promise<TreatmentRecord | undefined> {
-    return this.treatments.find(t => t.slug === slug);
+    const collection = await getCollection<TreatmentRecord>(COLLECTION_NAME);
+    return collection.findOne({ slug }, { projection: { _id: 0 } }) as Promise<TreatmentRecord | undefined>;
   }
 
   async create(input: CreateTreatmentInput): Promise<TreatmentRecord> {
@@ -93,61 +91,38 @@ class TreatmentRepository {
       updatedAt: now,
     };
 
-    this.treatments.push(record);
-    await this.save();
-
+    const collection = await getCollection<TreatmentRecord>(COLLECTION_NAME);
+    await collection.insertOne(record as TreatmentRecord);
     return record;
   }
-  
+
   async update(id: string, input: UpdateTreatmentInput): Promise<TreatmentRecord | undefined> {
-    const index = this.treatments.findIndex(t => t.id === id);
-    if (index === -1) return undefined;
-    
-    const record = this.treatments[index];
-    const updatedRecord: TreatmentRecord = {
-      ...record,
-      ...input,
-      slug: input.title ? slugify(input.title) : record.slug,
-      updatedAt: new Date().toISOString()
+    const collection = await getCollection<TreatmentRecord>(COLLECTION_NAME);
+    const updatePayload = Object.fromEntries(
+      Object.entries(input).filter(([, value]) => value !== undefined),
+    ) as Partial<TreatmentRecord>;
+
+    const next = {
+      ...updatePayload,
+      slug: input.title ? slugify(input.title) : undefined,
+      updatedAt: new Date().toISOString(),
     };
-    
-    this.treatments[index] = updatedRecord;
-    await this.save();
-    return updatedRecord;
+
+    const sanitized = Object.fromEntries(Object.entries(next).filter(([, value]) => value !== undefined));
+
+    const result = await collection.findOneAndUpdate(
+      { id },
+      { $set: sanitized },
+      { returnDocument: 'after', projection: { _id: 0 } },
+    );
+
+    return result as TreatmentRecord | undefined;
   }
-  
+
   async delete(id: string): Promise<boolean> {
-    const initialLength = this.treatments.length;
-    this.treatments = this.treatments.filter(t => t.id !== id);
-    
-    if (this.treatments.length < initialLength) {
-        await this.save();
-        return true;
-    }
-    return false;
-  }
-
-  private load() {
-    fs.mkdirSync(dataDir, { recursive: true });
-
-    if (!fs.existsSync(dataFile)) {
-      this.treatments = [];
-      return;
-    }
-
-    try {
-        const raw = fs.readFileSync(dataFile, 'utf8');
-        const parsed = JSON.parse(raw) as TreatmentRecord[];
-        this.treatments = Array.isArray(parsed) ? parsed : [];
-    } catch (e) {
-        console.error("Failed to parse treatments.json", e);
-        this.treatments = [];
-    }
-  }
-
-  private async save() {
-    await fs.promises.mkdir(dataDir, { recursive: true });
-    await fs.promises.writeFile(dataFile, JSON.stringify(this.treatments, null, 2), 'utf8');
+    const collection = await getCollection<TreatmentRecord>(COLLECTION_NAME);
+    const result = await collection.deleteOne({ id });
+    return result.deletedCount > 0;
   }
 }
 

@@ -1,31 +1,23 @@
 import { randomUUID } from 'crypto';
+import { getCollection } from '../config/mongo';
 import { CreateUserInput, UpdateUserInput, User } from '../types/user.types';
 
-/**
- * REPOSITORY LAYER
- * ----------------
- * This is the ONLY place that talks to a data source.
- * Right now it's an in-memory array so the boilerplate runs with zero setup.
- *
- * To use a real database, replace the method bodies below with your
- * ORM/driver calls (e.g. Prisma's `prisma.user.findMany()`, Mongoose's
- * `UserModel.find()`, a raw SQL query, etc). Nothing outside this file
- * needs to change - the service layer only knows about these method
- * signatures, not how the data is actually stored.
- */
-class UserRepository {
-  private users: User[] = [];
+const COLLECTION_NAME = 'users';
 
+class UserRepository {
   async findAll(): Promise<User[]> {
-    return this.users;
+    const collection = await getCollection<User>(COLLECTION_NAME);
+    return collection.find({}, { projection: { _id: 0 } }).toArray();
   }
 
   async findById(id: string): Promise<User | null> {
-    return this.users.find((u) => u.id === id) ?? null;
+    const collection = await getCollection<User>(COLLECTION_NAME);
+    return collection.findOne({ id }, { projection: { _id: 0 } }) as Promise<User | null>;
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return this.users.find((u) => u.email === email) ?? null;
+    const collection = await getCollection<User>(COLLECTION_NAME);
+    return collection.findOne({ email }, { projection: { _id: 0 } }) as Promise<User | null>;
   }
 
   async create(input: CreateUserInput): Promise<User> {
@@ -36,23 +28,32 @@ class UserRepository {
       age: input.age,
       createdAt: new Date().toISOString(),
     };
-    this.users.push(user);
+
+    const collection = await getCollection<User>(COLLECTION_NAME);
+    await collection.insertOne(user as User);
     return user;
   }
 
   async update(id: string, input: UpdateUserInput): Promise<User | null> {
-    const user = await this.findById(id);
-    if (!user) return null;
-    Object.assign(user, input);
-    return user;
+    const collection = await getCollection<User>(COLLECTION_NAME);
+    const updatePayload = Object.fromEntries(
+      Object.entries(input).filter(([, value]) => value !== undefined),
+    ) as Partial<User>;
+
+    const result = await collection.findOneAndUpdate(
+      { id },
+      { $set: updatePayload },
+      { returnDocument: 'after', projection: { _id: 0 } },
+    );
+
+    return result as User | null;
   }
 
   async delete(id: string): Promise<boolean> {
-    const before = this.users.length;
-    this.users = this.users.filter((u) => u.id !== id);
-    return this.users.length < before;
+    const collection = await getCollection<User>(COLLECTION_NAME);
+    const result = await collection.deleteOne({ id });
+    return result.deletedCount > 0;
   }
 }
 
-// Exported as a singleton - one shared instance across the whole app.
 export const userRepository = new UserRepository();
