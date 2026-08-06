@@ -40,6 +40,7 @@ export const AdminTreatments: React.FC = () => {
             protocol: t.protocol || '',
             bestFor: Array.isArray(t.bestFor) ? t.bestFor.join(', ') : '',
             benefits: Array.isArray(t.benefits) ? t.benefits.join(', ') : '',
+            discountPrice: t.discountPrice || '',
         });
         setImageFile(null);
         setIsEditing(true);
@@ -119,9 +120,16 @@ export const AdminTreatments: React.FC = () => {
                                 <input {...register('title')} className={`w-full border p-2 rounded ${errors.title ? 'border-red-500' : ''}`} />
                                 {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>}
                             </div>
-                            <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1">Price</label>
-                                <input {...register('price')} className="w-full border p-2 rounded" placeholder="e.g. 250.00" />
+                            <div className="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">Price</label>
+                                    <input {...register('price')} className="w-full border p-2 rounded" placeholder="e.g. 250.00" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">Discount Price</label>
+                                    <input {...register('discountPrice')} className={`w-full border p-2 rounded ${errors.discountPrice ? 'border-red-500' : ''}`} placeholder="e.g. 200.00" />
+                                    {errors.discountPrice && <p className="text-red-500 text-xs mt-1">{errors.discountPrice.message}</p>}
+                                </div>
                             </div>
                             <div>
                                 <label className="block text-sm font-bold text-gray-700 mb-1">Sessions</label>
@@ -186,8 +194,18 @@ export const AdminTreatments: React.FC = () => {
                                 <div className="flex items-center gap-4">
                                     {t.image && <img src={t.image} alt={t.title} className="w-16 h-16 object-cover rounded-lg" />}
                                     <div>
-                                        <h4 className="font-bold text-lg text-gray-800">{t.title}</h4>
-                                        <p className="text-sm text-gray-500">{t.price} | {t.duration}</p>
+                                        <div className="flex items-center gap-2">
+                                            <h4 className="font-bold text-lg text-gray-800">{t.title}</h4>
+                                            {t.discountPrice && (
+                                                <span className="bg-[#6b472e]/10 text-[#6b472e] text-[10px] uppercase font-bold px-2 py-0.5 rounded">
+                                                    Discount: ${t.discountPrice}
+                                                </span>
+                                            )}
+                                        </div>
+                                        <p className="text-sm text-gray-500">
+                                            <span className={t.discountPrice ? 'line-through opacity-60 mr-2' : ''}>${t.price}</span>
+                                            | {t.duration}
+                                        </p>
                                     </div>
                                 </div>
                                 <div className="flex gap-2">

@@ -18,6 +18,7 @@ export interface Treatment {
     sessions: string;
     image: string;
     price: string;
+    discountPrice?: string;
     duration: string;
     protocol: string;
     createdAt?: string;

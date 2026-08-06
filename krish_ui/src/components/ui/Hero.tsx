@@ -1,8 +1,16 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import heroVideo from "../../assets/processed_1784880738109-GpcEPHYY-0 (1).mp4.mp4";
 import GlossyButton from "./GlossyButton";
+import { useTreatments } from "../../hooks/useTreatments";
 
 const Hero: React.FC = () => {
+    const navigate = useNavigate();
+    const { treatments } = useTreatments();
+    
+    // Find first discounted treatment
+    const discountedTreatment = treatments.find(t => t.discountPrice);
+
     return (
         <section className="relative flex h-[calc(100vh-90px)] flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-[#F2E9D8] via-[#EADBCA] to-[#D9A577] py-8 px-4 sm:px-6 lg:px-8">
 
@@ -23,6 +31,20 @@ const Hero: React.FC = () => {
             </div>
 
             <div className="relative z-10 flex w-full max-w-6xl flex-col items-center">
+                
+                {/* Special Offer Banner */}
+                {discountedTreatment && (
+                    <div 
+                        onClick={() => navigate(`/treatment/${discountedTreatment.slug || discountedTreatment._id}`)}
+                        className="mb-8 cursor-pointer animate-fade-in-up flex items-center gap-3 bg-[#3A2D23]/90 backdrop-blur-md text-[#F2E9D8] px-6 py-2.5 rounded-full shadow-xl hover:bg-[#3A2D23] hover:scale-105 transition-all duration-300 border border-[#D9A577]/30"
+                    >
+                        <span className="flex h-2 w-2 rounded-full bg-red-500 animate-pulse"></span>
+                        <span className="text-sm md:text-base font-semibold tracking-wide">
+                            Special Offer: {discountedTreatment.title} for ${discountedTreatment.discountPrice}
+                        </span>
+                        <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                    </div>
+                )}
 
                 {/* Minimalist Branding */}
                 <div className="mb-8 text-center animate-fade-in-up px-4">

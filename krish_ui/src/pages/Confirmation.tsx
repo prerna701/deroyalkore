@@ -216,13 +216,16 @@ const Confirmation: React.FC = () => {
                                         ))}
                                     </div>
                                 </div>
-                                <GlossyButton
-                                    className="w-full !min-h-[50px] !py-3"
-                                    onClick={handleDownloadReceipt}
-                                >
-                                    Download Receipt
-                                </GlossyButton>
                             </div>
+                        </div>
+                        
+                        <div className="mt-8">
+                            <GlossyButton
+                                className="w-full !min-h-[50px] !py-3"
+                                onClick={handleDownloadReceipt}
+                            >
+                                Download Receipt
+                            </GlossyButton>
                         </div>
                     </div>
                 </div>
