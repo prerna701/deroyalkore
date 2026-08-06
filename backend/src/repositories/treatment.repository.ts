@@ -13,6 +13,7 @@ export interface TreatmentRecord {
   bestFor: string[];
   benefits: string[];
   image: string;
+  discountPrice?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -27,6 +28,7 @@ export interface CreateTreatmentInput {
   bestFor: string[];
   benefits: string[];
   image: string;
+  discountPrice?: string;
 }
 
 export interface UpdateTreatmentInput {
@@ -39,6 +41,7 @@ export interface UpdateTreatmentInput {
   bestFor?: string[];
   benefits?: string[];
   image?: string;
+  discountPrice?: string;
 }
 
 const slugify = (text: string) => {
@@ -87,6 +90,7 @@ class TreatmentRepository {
       bestFor: input.bestFor,
       benefits: input.benefits,
       image: input.image,
+      discountPrice: input.discountPrice,
       createdAt: now,
       updatedAt: now,
     };

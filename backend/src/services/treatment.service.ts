@@ -16,6 +16,7 @@ export interface TreatmentResponse {
   bestFor: string[];
   benefits: string[];
   image: string;
+  discountPrice?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -41,6 +42,7 @@ class TreatmentService {
       bestFor: record.bestFor,
       benefits: record.benefits,
       image: this.toPublicUrl(record.image, baseUrl),
+      discountPrice: record.discountPrice,
       createdAt: record.createdAt,
       updatedAt: record.updatedAt,
     };
@@ -79,7 +81,7 @@ class TreatmentService {
   }
 
   async createTreatment(data: any, file: Express.Multer.File | undefined, baseUrl: string): Promise<TreatmentResponse> {
-    const { title, about, sessions, price, duration, protocol } = data;
+    const { title, about, sessions, price, discountPrice, duration, protocol } = data;
 
     if (!title || !about) {
       throw ApiError.badRequest('Title and about fields are required');
@@ -96,6 +98,14 @@ class TreatmentService {
       throw ApiError.badRequest('Image is required');
     }
 
+    if (discountPrice && price) {
+      const p = parseFloat(price);
+      const dp = parseFloat(discountPrice);
+      if (!isNaN(p) && !isNaN(dp) && dp >= p) {
+        throw ApiError.badRequest('Discount price must be strictly less than the regular price');
+      }
+    }
+
     const record = await treatmentRepository.create({
       title,
       about,
@@ -106,6 +116,7 @@ class TreatmentService {
       bestFor,
       benefits,
       image,
+      discountPrice,
     });
 
     return this.toResponseTreatment(record, baseUrl);
@@ -117,13 +128,21 @@ class TreatmentService {
       throw ApiError.notFound('Treatment not found');
     }
 
-    const { title, about, sessions, price, duration, protocol } = data;
+    const { title, about, sessions, price, discountPrice, duration, protocol } = data;
     const bestFor = data.bestFor ? this.parseArrayField(data.bestFor) : undefined;
     const benefits = data.benefits ? this.parseArrayField(data.benefits) : undefined;
 
     const image = file
       ? `/uploads/treatments/${file.filename}`
       : data.image;
+
+    if (discountPrice && (price || existing.price)) {
+      const p = parseFloat(price || existing.price);
+      const dp = parseFloat(discountPrice);
+      if (!isNaN(p) && !isNaN(dp) && dp >= p) {
+        throw ApiError.badRequest('Discount price must be strictly less than the regular price');
+      }
+    }
 
     const updatedRecord = await treatmentRepository.update(id, {
       title,
@@ -135,6 +154,7 @@ class TreatmentService {
       bestFor,
       benefits,
       image,
+      discountPrice: discountPrice === '' ? null : discountPrice,
     });
 
     return this.toResponseTreatment(updatedRecord!, baseUrl);
