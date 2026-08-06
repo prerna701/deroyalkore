@@ -11,6 +11,12 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: admin123
     volumes:
       - mongodb_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "-u", "admin", "-p", "admin123", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
     networks:
       - app-network
 
@@ -28,11 +34,27 @@ services:
       - ./backend/uploads:/usr/src/app/uploads
     environment:
       - PORT=7000
-      - NODE_ENV=development
-      # Add mongo URI here if needed by your backend, e.g.:
-      # - MONGO_URI=mongodb://admin:admin123@mongodb:27017
+      - NODE_ENV=production
+      - MONGO_URI=mongodb://admin:admin123@mongodb:27017
+      - MONGO_DB_NAME=krish_site
+      - MONGO_MAX_POOL_SIZE=10
+      - MONGO_CONNECT_TIMEOUT_MS=5000
+      - MONGO_SERVER_SELECTION_TIMEOUT_MS=5000
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
+      - SMTP_SECURE=${SMTP_SECURE}
+      - SMTP_FROM=${SMTP_FROM}
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "const p=process.env.PORT||7000;require('http').get({hostname:'127.0.0.1',port:p,path:'/healthz',timeout:2000},r=>process.exit(r.statusCode<500?0:1)).on('error',()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
     networks:
       - app-network
 
@@ -48,7 +70,8 @@ services:
     environment:
       - PORT=3000
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     networks:
       - app-network
 
