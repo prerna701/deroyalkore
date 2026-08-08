@@ -112,12 +112,10 @@ const Confirmation: React.FC = () => {
 
                         {/* Date/Time Row */}
                         <div className="grid grid-cols-2 gap-3">
-                            <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-4 text-center shadow-md">
-                                <span className="material-symbols-outlined text-[#D9A577] text-xl mb-1">calendar_month</span>
+                            <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-4 text-center shadow-md flex items-center justify-center min-h-[70px]">
                                 <p className="text-white font-bold text-[10px] uppercase tracking-widest">{date}</p>
                             </div>
-                            <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-4 text-center shadow-md">
-                                <span className="material-symbols-outlined text-[#D9A577] text-xl mb-1">schedule</span>
+                            <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-4 text-center shadow-md flex items-center justify-center min-h-[70px]">
                                 <p className="text-white font-bold text-[10px] uppercase tracking-widest">{time}</p>
                             </div>
                         </div>
@@ -170,42 +168,44 @@ const Confirmation: React.FC = () => {
 
                         <div id="receipt-content" className="text-center space-y-8 bg-[#1A1712] p-4 rounded-xl">
                             <div className="space-y-2">
-                                <h1 className="text-3xl font-bold tracking-[0.2em] text-primary">AURUM</h1>
-                                <p className="text-[10px] text-white/30 uppercase tracking-[0.5em]">Official Transaction Receipt</p>
+                                <h1 className="text-3xl font-bold tracking-[0.2em] text-primary">DE ROYAL KORE</h1>
+                                <p className="text-[10px] text-white/80 uppercase tracking-[0.5em]">Official Transaction Receipt</p>
                             </div>
 
-                            <div className="h-px w-full bg-white/10"></div>
+                            <div className="h-px w-full bg-white/20"></div>
 
-                            <div className="space-y-4 text-left">
+                            <div className="space-y-4 text-left text-white">
                                 <div className="flex justify-between items-baseline">
-                                    <span className="text-[9px] text-white/20 uppercase font-bold tracking-widest">Client Name</span>
+                                    <span className="text-[9px] text-white uppercase font-bold tracking-widest">Client Name</span>
                                     <span className="text-sm text-white tracking-widest">{userData?.name || 'Guest'}</span>
                                 </div>
                                 <div className="flex justify-between items-baseline">
-                                    <span className="text-[9px] text-white/20 uppercase font-bold tracking-widest">Phone</span>
-                                    <span className="text-sm text-white/80">{userData?.phone}</span>
+                                    <span className="text-[9px] text-white uppercase font-bold tracking-widest">Phone</span>
+                                    <span className="text-sm text-white">{userData?.phone}</span>
                                 </div>
                                 {userData?.email && (
                                     <div className="flex justify-between items-baseline">
-                                        <span className="text-[9px] text-white/20 uppercase font-bold tracking-widest">Email</span>
-                                        <span className="text-xs text-white/60">{userData?.email}</span>
+                                        <span className="text-[9px] text-white uppercase font-bold tracking-widest">Email</span>
+                                        <span className="text-xs text-white">{userData?.email}</span>
                                     </div>
                                 )}
                                 <div className="flex justify-between items-baseline pt-4">
-                                    <span className="text-[9px] text-white/20 uppercase font-bold tracking-widest">Ritual</span>
+                                    <span className="text-[9px] text-white uppercase font-bold tracking-widest">Ritual</span>
                                     <span className="text-sm text-primary italic">{treatment?.title}</span>
                                 </div>
                                 <div className="flex justify-between items-baseline">
-                                    <span className="text-[9px] text-white/20 uppercase font-bold tracking-widest">DateTime</span>
+                                    <span className="text-[9px] text-white uppercase font-bold tracking-widest">DateTime</span>
                                     <span className="text-sm text-white">{date} • {time}</span>
                                 </div>
                                 <div className="flex justify-between items-baseline">
-                                    <span className="text-[9px] text-white/20 uppercase font-bold tracking-widest">Total paid</span>
-                                    <span className="text-xl text-white">${treatment?.price}</span>
+                                    <span className="text-[9px] text-white uppercase font-bold tracking-widest">Total Paid</span>
+                                    <span className="text-xl text-white font-bold">
+                                        ₹{treatment?.discountPrice || treatment?.price}
+                                    </span>
                                 </div>
                             </div>
 
-                            <div className="h-px w-full bg-white/10"></div>
+                            <div className="h-px w-full bg-white/20"></div>
 
                             <div className="pt-4 flex flex-col items-center gap-4">
                                 <div className="size-24 border border-white/10 p-2 rounded-2xl bg-white/[0.02]">

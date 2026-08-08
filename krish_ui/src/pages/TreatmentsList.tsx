@@ -18,11 +18,11 @@ const TreatmentsList: React.FC = () => {
     });
 
     if (loading) {
-        return <div className="min-h-screen bg-[#FDFBF7] flex justify-center items-center text-xl text-[#3A2D23]">Loading treatments...</div>;
+        return <div className="min-h-[calc(100vh-64px)] lg:min-h-[calc(100vh-90px)] bg-[#FDFBF7] flex justify-center items-center text-xl text-[#3A2D23]">Loading treatments...</div>;
     }
 
     return (
-        <div className="min-h-screen bg-[#FDFBF7] pt-32 pb-20">
+        <div className="min-h-[calc(100vh-64px)] lg:min-h-[calc(100vh-90px)] bg-[#FDFBF7] pt-32 pb-20">
             {/* Back Button */}
             <div className="max-w-7xl mx-auto px-6 md:px-10 mb-8">
                 <button

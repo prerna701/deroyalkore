@@ -2,21 +2,31 @@ import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSEO } from '../hooks/useSEO';
 import { useBeforeAfterCases } from '../hooks/useBeforeAfterCases';
+import { useTreatments } from '../hooks/useTreatments';
 import GlossyButton from '../components/ui/GlossyButton';
 
 const BeforeAfterPage: React.FC = memo(() => {
     const navigate = useNavigate();
     const [filter, setFilter] = useState<string>('all');
     const { cases, loading } = useBeforeAfterCases();
+    const { treatments } = useTreatments();
+    const [selectedTreatment, setSelectedTreatment] = useState<string>('');
+
     const handleBack = useCallback(() => navigate(-1), [navigate]);
     const handleCategoryChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
         setFilter(event.target.value);
     }, []);
-    const openTreatments = useCallback(() => navigate('/treatments'), [navigate]);
+    const handleBook = useCallback(() => {
+        if (selectedTreatment) {
+            navigate(`/treatment/${selectedTreatment}`);
+        } else {
+            navigate('/treatments');
+        }
+    }, [selectedTreatment, navigate]);
 
     useSEO({
         title: 'Clinical Transformations - Real Results',
-        description: 'Explore real skin transformation results from KRISHI Skin Clinic, categorized by ritual type.'
+        description: 'Explore real skin transformation results from De Royal Kore Clinic, categorized by ritual type.'
     });
 
     const groupedCases = useMemo(() => {
@@ -40,18 +50,18 @@ const BeforeAfterPage: React.FC = memo(() => {
     const categories = useMemo(() => ['all', ...groupedCases.map((group) => group.category)], [groupedCases]);
 
     return (
-        <section className="min-h-screen bg-[#f8f2ea] pt-20 pb-16 selection:bg-primary/30">
-            <header className="fixed left-0 right-0 top-0 z-50 flex h-16 items-center border-b border-white/5 bg-[#1d1915] px-6 shadow-2xl backdrop-blur-md">
-                <button
-                    onClick={handleBack}
-                    className="group flex items-center gap-2 text-white transition-all hover:text-primary"
-                >
-                    <span className="material-symbols-outlined transition-transform group-hover:-translate-x-1">arrow_back</span>
-                    <span className="text-[10px] font-bold uppercase tracking-widest">Return to Rituals</span>
-                </button>
-            </header>
-
+        <section className="min-h-[calc(100vh-64px)] lg:min-h-[calc(100vh-90px)] bg-[#f8f2ea] pt-32 pb-16 selection:bg-primary/30">
             <div className="mx-auto max-w-7xl px-6">
+                {/* Back Button */}
+                <div className="mb-8">
+                    <button
+                        onClick={handleBack}
+                        className="group flex items-center gap-2 text-[#3A2D23] transition-all hover:text-primary"
+                    >
+                        <span className="material-symbols-outlined transition-transform group-hover:-translate-x-1">arrow_back</span>
+                        <span className="text-[10px] font-bold uppercase tracking-widest">Back</span>
+                    </button>
+                </div>
                 <div className="mb-8 space-y-6 text-center">
                     <div className="flex items-center justify-center gap-4">
                         <div className="h-px w-12 bg-primary/20"></div>
@@ -147,16 +157,29 @@ const BeforeAfterPage: React.FC = memo(() => {
                     )}
                 </div>
 
-                <div className="mx-auto mt-20 max-w-4xl overflow-hidden rounded-[4rem] border border-white/5 bg-[#1d1915] p-16 text-center relative">
+                <div className="mx-auto mt-20 max-w-4xl overflow-hidden rounded-[3rem] border border-white/5 bg-[#1d1915] p-10 md:p-16 text-center relative">
                     <div className="absolute right-0 top-0 h-64 w-64 -translate-y-1/2 translate-x-1/2 rounded-full bg-primary/5 blur-3xl"></div>
                     <span className="material-symbols-outlined mb-6 text-4xl text-primary">workspace_premium</span>
                     <h3 className="mb-4 text-2xl font-bold tracking-tight text-white">Your Skin is Next</h3>
                     <p className="mx-auto max-w-xl text-sm font-light leading-relaxed text-white/40 italic">
                         “Real beauty is a science. Every transformation documented here is a result of precise clinical methodology and skin dedication.”
                     </p>
-                    <div className="pt-10">
-                        <GlossyButton onClick={openTreatments}>
-                            Start your ritual
+                    
+                    <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 max-w-lg mx-auto">
+                        <select
+                            value={selectedTreatment}
+                            onChange={(e) => setSelectedTreatment(e.target.value)}
+                            className="w-full sm:w-2/3 rounded-xl border border-primary/20 bg-white/10 px-4 py-3.5 text-sm font-bold text-white shadow-lg backdrop-blur-md outline-none focus:border-primary"
+                        >
+                            <option value="" className="bg-[#1d1915] text-white">Select a Treatment...</option>
+                            {treatments.map((t) => (
+                                <option key={t._id || t.slug} value={t.slug || t._id} className="bg-[#1d1915] text-white">
+                                    {t.title}
+                                </option>
+                            ))}
+                        </select>
+                        <GlossyButton onClick={handleBook} className="w-full sm:w-auto">
+                            Book Appointment
                         </GlossyButton>
                     </div>
                 </div>

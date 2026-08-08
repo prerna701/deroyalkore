@@ -1,6 +1,6 @@
 import { getStoredAdminSession } from '../utils/adminAuth';
 
-const BASE_URL = import.meta.env.VITE_BACKEND_DOMAIN ? `${import.meta.env.VITE_BACKEND_DOMAIN}/v1` : 'http://localhost:7000/v1';
+const BASE_URL = import.meta.env.VITE_BACKEND_DOMAIN ? `${import.meta.env.VITE_BACKEND_DOMAIN}/v1` : '/api/v1';
 
 /**
  * Helper to get headers, automatically attaching the auth token if available.

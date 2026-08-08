@@ -17,7 +17,7 @@ const OffersPage: React.FC = () => {
     const discountedTreatments = treatments.filter(t => t.discountPrice);
 
     return (
-        <div className="min-h-screen bg-[#FDFBF7] pt-32 pb-20">
+        <div className="min-h-[calc(100vh-64px)] lg:min-h-[calc(100vh-90px)] bg-[#FDFBF7] pt-32 pb-20">
             {/* Header */}
             <div className="max-w-7xl mx-auto px-6 md:px-10 text-center mb-16">
                 <h1 className="font-sans text-5xl md:text-6xl font-bold text-[#3A2D23] mb-4">

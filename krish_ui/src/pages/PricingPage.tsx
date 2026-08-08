@@ -45,7 +45,7 @@ const PricingPage: React.FC = () => {
     const combinedPricing = [...filteredDynamic, ...pricingData];
 
     return (
-        <div className="min-h-screen bg-[#FDFBF7] pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-[calc(100vh-64px)] lg:min-h-[calc(100vh-90px)] bg-[#FDFBF7] pt-32 pb-20 px-4 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-4xl">
                 <div className="text-center mb-16">
                     <h1 className="font-sans text-4xl font-bold tracking-tight text-[#3A2D23] sm:text-5xl">

@@ -109,7 +109,7 @@ const SkinTreatment: React.FC = memo(() => {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-[#FDFBF7]">
+            <div className="min-h-[calc(100vh-64px)] lg:min-h-[calc(100vh-90px)] flex items-center justify-center bg-[#FDFBF7]">
                 <h1 className="text-2xl text-[#3A2D23]">Loading details...</h1>
             </div>
         );
@@ -117,7 +117,7 @@ const SkinTreatment: React.FC = memo(() => {
 
     if (!treatment) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-[#FDFBF7]">
+            <div className="min-h-[calc(100vh-64px)] lg:min-h-[calc(100vh-90px)] flex flex-col items-center justify-center bg-[#FDFBF7]">
                 <h1 className="text-3xl font-bold text-[#3A2D23] mb-4">Treatment Not Found</h1>
                 <GlossyButton onClick={handleBack}>Return to Treatments</GlossyButton>
             </div>
@@ -129,7 +129,7 @@ const SkinTreatment: React.FC = memo(() => {
     // STEP 0: New Luxury Layout
     if (step === 0) {
         return (
-            <div className="min-h-screen bg-[#FDFBF7] pt-20 pb-8">
+            <div className="min-h-[calc(100vh-64px)] lg:min-h-[calc(100vh-90px)] bg-[#FDFBF7] pt-20 pb-8">
                 {/* Breadcrumb & Navigation */}
                 <div className="mx-auto max-w-6xl px-6 lg:px-8 mb-4">
                     <button
@@ -298,7 +298,7 @@ const SkinTreatment: React.FC = memo(() => {
 
     // STEP 1 and 2: The Booking Wizard
     return (
-        <div className="bg-background-dark text-white h-screen flex flex-col selection:bg-primary/30 overflow-hidden fixed inset-0 z-[100]">
+        <div className="bg-background-dark text-white flex flex-col selection:bg-primary/30 overflow-hidden fixed top-[64px] lg:top-[90px] left-0 right-0 bottom-0 h-[calc(100vh-64px)] lg:h-[calc(100vh-90px)] z-40">
             <header className="flex items-center bg-background-dark p-3 border-b border-white/5 h-14 shrink-0 px-6">
                 <button
                     onClick={handleBack}
@@ -306,12 +306,6 @@ const SkinTreatment: React.FC = memo(() => {
                 >
                     <span className="material-symbols-outlined text-lg">arrow_back</span>
                 </button>
-                <div className="flex-1 flex justify-center">
-                    <h1 className="text-[10px] font-bold tracking-[0.4em] uppercase text-primary">
-                        {bUi.headerPrefix} <span className="text-white/20 font-light ml-1">{step === 1 ? bUi.headerBooking : bUi.headerDetails}</span>
-                    </h1>
-                </div>
-                <div className="w-8"></div>
             </header>
 
             <main className="flex-1 flex flex-col lg:flex-row min-h-0 overflow-hidden relative">
@@ -408,7 +402,9 @@ const SkinTreatment: React.FC = memo(() => {
                         <span className="text-[8px] text-white/30 uppercase tracking-[0.4em] mb-1 font-bold">{bUi.footer.summary}</span>
                         <div className="flex items-baseline gap-2">
                             <span className="text-primary text-sm font-bold">₹</span>
-                            <span className="text-3xl md:text-5xl font-bold text-white tracking-tighter">{treatment.price}</span>
+                            <span className="text-3xl md:text-5xl font-bold text-white tracking-tighter">
+                                {treatment.discountPrice || treatment.price}
+                            </span>
                         </div>
                     </div>
                     <button

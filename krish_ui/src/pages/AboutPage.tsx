@@ -9,7 +9,7 @@ const AboutPage: React.FC = () => {
     });
 
     return (
-        <div className="min-h-screen">
+        <div className="min-h-[calc(100vh-64px)] lg:min-h-[calc(100vh-90px)] flex flex-col justify-center">
             <AboutUsSection hideButton={true} />
         </div>
     );

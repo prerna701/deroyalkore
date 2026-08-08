@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSEO } from '../hooks/useSEO';
 import { apiClient } from '../services/apiClient';
+import { useTreatments } from '../hooks/useTreatments';
 
 const ContactPage: React.FC = () => {
   const navigate = useNavigate();
+  const { treatments } = useTreatments();
   const [form, setForm] = useState({
     name: '',
     phone: '',
     email: '',
-    treatmentName: 'Consultation',
+    treatmentName: '',
     preferredDate: '',
     preferredTime: '',
     message: '',
@@ -19,7 +21,7 @@ const ContactPage: React.FC = () => {
 
   useSEO({
     title: 'Book an Appointment',
-    description: 'Book a consultation at Krish Skin Clinic and receive confirmation instantly.',
+    description: 'Book a consultation at De Royal Kore Clinic and receive confirmation instantly.',
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -58,7 +60,7 @@ const ContactPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7] pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-[calc(100vh-64px)] lg:min-h-[calc(100vh-90px)] bg-[#FDFBF7] pt-32 pb-20 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl rounded-[2rem] border border-[#E7D8BF] bg-white p-8 shadow-xl sm:p-10 lg:p-12">
         <div className="mb-10 text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.35em] text-[#D9A577]">Book a consultation</p>
@@ -84,8 +86,25 @@ const ContactPage: React.FC = () => {
 
           <div className="space-y-4">
             <div>
-              <label className="mb-2 block text-sm font-semibold text-[#3A2D23]">Treatment interest</label>
-              <input value={form.treatmentName} onChange={(e) => setForm({ ...form, treatmentName: e.target.value })} className="w-full rounded-xl border border-[#E7D8BF] px-4 py-3 outline-none focus:border-[#D9A577]" placeholder="e.g. Pigmentation treatment" />
+              <label className="mb-2 block text-sm font-semibold text-[#3A2D23]">Treatment Interest</label>
+              <select
+                value={form.treatmentName}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setForm({ ...form, treatmentName: val });
+                  if (val) {
+                    navigate(`/treatment/${val}`);
+                  }
+                }}
+                className="w-full rounded-xl border border-[#E7D8BF] bg-white px-4 py-3 outline-none focus:border-[#D9A577] text-sm font-medium text-[#3A2D23]"
+              >
+                <option value="">Select a Treatment...</option>
+                {treatments.map((t) => (
+                  <option key={t._id || t.slug} value={t.slug || t._id}>
+                    {t.title}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
