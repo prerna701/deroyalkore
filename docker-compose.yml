@@ -4,8 +4,6 @@ services:
     image: mongo:8.0
     container_name: mongodb
     restart: unless-stopped
-    ports:
-      - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: admin123
@@ -28,14 +26,14 @@ services:
     container_name: backend
     restart: unless-stopped
     ports:
-      - "7000:7000"
+      - "127.0.0.1:7000:7000"
     volumes:
       - ./backend/data:/usr/src/app/data
       - ./backend/uploads:/usr/src/app/uploads
     environment:
       - PORT=7000
       - NODE_ENV=production
-      - CORS_ORIGIN=https://www.deroyalkore.com
+      - CORS_ORIGIN=https://deroyalkore.com,https://www.deroyalkore.com
       - MONGO_URI=mongodb://admin:admin123@mongodb:27017
       - MONGO_DB_NAME=krish_site
       - MONGO_MAX_POOL_SIZE=10
@@ -64,12 +62,10 @@ services:
     build:
       context: ./krish_ui
       dockerfile: Dockerfile
-      args:
-        VITE_BACKEND_DOMAIN: https://www.deroyalkore.com
     container_name: frontend
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     environment:
       - PORT=3000
     depends_on:

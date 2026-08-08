@@ -23,9 +23,8 @@ interface FAQApiResponse {
   };
 }
 
-const BASE_URL = import.meta.env.VITE_BACKEND_DOMAIN
-  ? `${import.meta.env.VITE_BACKEND_DOMAIN}/v1`
-  : '/api/v1';
+const API_ORIGIN = import.meta.env.VITE_BACKEND_DOMAIN?.trim() || '';
+const BASE_URL = `${API_ORIGIN}/api/v1`;
 
 const getHeaders = () => {
   const headers: HeadersInit = {

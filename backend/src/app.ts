@@ -21,6 +21,10 @@ import routes from './routes';
  * (e.g. with supertest) without actually opening a network port.
  */
 const app: Application = express();
+const allowedOrigins = env.CORS_ORIGIN
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 app.disable('x-powered-by');
 app.set('trust proxy', 1);
@@ -30,7 +34,10 @@ app.use(requestIdMiddleware);
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
 }));
-app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
+app.use(cors({
+  origin: allowedOrigins.includes('*') ? '*' : allowedOrigins,
+  credentials: true,
+}));
 app.use(compression());
 app.use(rateLimiter);
 
