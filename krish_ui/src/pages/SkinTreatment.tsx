@@ -9,6 +9,7 @@ import { apiClient } from '../services/apiClient';
 import { Treatment } from '../types';
 import toast from 'react-hot-toast';
 import { resolveImageUrl } from '../utils/resolveImageUrl';
+import { formatPrice } from '../utils/formatPrice';
 
 const SkinTreatment: React.FC = memo(() => {
     const { id } = useParams<{ id: string }>();
@@ -401,9 +402,8 @@ const SkinTreatment: React.FC = memo(() => {
                     <div className="flex flex-col">
                         <span className="text-[8px] text-white/30 uppercase tracking-[0.4em] mb-1 font-bold">{bUi.footer.summary}</span>
                         <div className="flex items-baseline gap-2">
-                            <span className="text-primary text-sm font-bold">₹</span>
                             <span className="text-3xl md:text-5xl font-bold text-white tracking-tighter">
-                                {treatment.discountPrice || treatment.price}
+                                {formatPrice(treatment.discountPrice || treatment.price)}
                             </span>
                         </div>
                     </div>

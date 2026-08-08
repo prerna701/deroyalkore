@@ -4,6 +4,7 @@ import { useSEO } from '../hooks/useSEO';
 import GlossyButton from '../components/ui/GlossyButton';
 import { useTreatments } from '../hooks/useTreatments';
 import { resolveImageUrl } from '../utils/resolveImageUrl';
+import { formatPrice } from '../utils/formatPrice';
 
 const OffersPage: React.FC = () => {
     const navigate = useNavigate();
@@ -70,8 +71,8 @@ const OffersPage: React.FC = () => {
                                         <div className="flex items-start">
                                             <span className="material-symbols-outlined text-[#3A2D23] mr-3 mt-1">check_circle</span>
                                             <p className="font-sans text-lg text-[#5D4634] font-medium">
-                                                Full Treatment for just <span className="font-bold text-[#3A2D23] text-xl border-b-2 border-[#3A2D23]">${treatment.discountPrice}</span> 
-                                                <span className="line-through text-sm opacity-60 ml-3">${treatment.price}</span>
+                                                Full Treatment for just <span className="font-bold text-[#3A2D23] text-xl border-b-2 border-[#3A2D23]">{formatPrice(treatment.discountPrice)}</span> 
+                                                <span className="line-through text-sm opacity-60 ml-3">{formatPrice(treatment.price)}</span>
                                             </p>
                                         </div>
                                         <div className="flex items-start">

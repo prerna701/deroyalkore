@@ -5,6 +5,7 @@ import { useTreatments } from '../../hooks/useTreatments';
 import { apiClient } from '../../services/apiClient';
 import { treatmentSchema, TreatmentFormValues, emptyTreatmentForm } from '../../schemas/treatmentSchema';
 import { resolveImageUrl } from '../../utils/resolveImageUrl';
+import { formatPrice } from '../../utils/formatPrice';
 
 export const AdminTreatments: React.FC = () => {
     const { treatments, loading, refetch } = useTreatments();
@@ -199,12 +200,12 @@ export const AdminTreatments: React.FC = () => {
                                             <h4 className="font-bold text-lg text-gray-800">{t.title}</h4>
                                             {t.discountPrice && (
                                                 <span className="bg-[#6b472e]/10 text-[#6b472e] text-[10px] uppercase font-bold px-2 py-0.5 rounded">
-                                                    Discount: ${t.discountPrice}
+                                                    Discount: {formatPrice(t.discountPrice)}
                                                 </span>
                                             )}
                                         </div>
                                         <p className="text-sm text-gray-500">
-                                            <span className={t.discountPrice ? 'line-through opacity-60 mr-2' : ''}>${t.price}</span>
+                                            <span className={t.discountPrice ? 'line-through opacity-60 mr-2' : ''}>{formatPrice(t.price)}</span>
                                             | {t.duration}
                                         </p>
                                     </div>

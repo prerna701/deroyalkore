@@ -1,7 +1,8 @@
 import React, { useState, useReducer, useEffect } from 'react';
 import { apiClient } from '../services/apiClient';
-import { BeforeAfterCase } from '../types';
+
 import { clearAdminSession, getStoredAdminSession, resolveAdminRole, saveAdminSession } from '../utils/adminAuth';
+
 import { normalizeBeforeAfterCases } from '../services/beforeAfterService';
 import { AdminTreatments } from '../components/admin/AdminTreatments';
 import AdminFaqs from '../components/admin/AdminFaqs';
@@ -10,27 +11,24 @@ import AdminGallery from '../components/admin/AdminGallery';
 
 interface CaseForm {
     id: number;
-    category: string;
-    isNewCategory: boolean;
     label: string;
     beforeFile: File | null;
     afterFile: File | null;
+    treatmentIds: string[]; // New field for multiple treatments
 }
 
-type Action = 
+type Action =
   | { type: 'ADD_CASE' }
   | { type: 'REMOVE_CASE'; id: number }
   | { type: 'UPDATE_CASE'; id: number; field: string; value: any }
-  | { type: 'TOGGLE_NEW_CATEGORY'; id: number; isNew: boolean }
-  | { type: 'RESET_FORM'; defaultIsNew: boolean; defaultCategory?: string };
+  | { type: 'RESET_FORM' };
 
-const createEmptyCase = (isNewCategory = true, category = ''): CaseForm => ({
+const createEmptyCase = (): CaseForm => ({
   id: Date.now() + Math.floor(Math.random() * 10000),
-  category,
-  isNewCategory,
   label: '',
   beforeFile: null,
   afterFile: null,
+  treatmentIds: [],
 });
 
 const initialCases: CaseForm[] = [createEmptyCase()];
@@ -38,15 +36,13 @@ const initialCases: CaseForm[] = [createEmptyCase()];
 function formReducer(state: CaseForm[], action: Action): CaseForm[] {
   switch (action.type) {
     case 'ADD_CASE':
-      return [...state, createEmptyCase(state.length > 0 ? state[0].isNewCategory : true)];
+      return [...state, createEmptyCase()];
     case 'REMOVE_CASE':
       return state.filter(c => c.id !== action.id);
     case 'UPDATE_CASE':
       return state.map(c => c.id === action.id ? { ...c, [action.field]: action.value } : c);
-    case 'TOGGLE_NEW_CATEGORY':
-      return state.map(c => c.id === action.id ? { ...c, isNewCategory: action.isNew, category: '' } : c);
     case 'RESET_FORM':
-      return [createEmptyCase(action.defaultIsNew, action.defaultCategory || '')];
+      return [createEmptyCase()];
     default:
       return state;
   }
@@ -57,6 +53,11 @@ const AdminDashboard: React.FC = () => {
     const [token, setToken] = useState(storedSession?.token || '');
     const [isAdmin, setIsAdmin] = useState(Boolean(storedSession));
     const [isReady, setIsReady] = useState(Boolean(storedSession));
+    // New state for treatments and existing cases
+    const [treatments, setTreatments] = useState<any[]>([]);
+    const [existingCases, setExistingCases] = useState<any[]>([]);
+    const [editingCaseId, setEditingCaseId] = useState<string | null>(null);
+
     
     // Login State
     const [email, setEmail] = useState('');
@@ -72,7 +73,7 @@ const AdminDashboard: React.FC = () => {
     // Upload State
     const [cases, dispatch] = useReducer(formReducer, initialCases);
     const [status, setStatus] = useState('');
-    const [existingCategories, setExistingCategories] = useState<string[]>([]);
+  
 
     const loadAppointments = async () => {
         setAppointmentsLoading(true);
@@ -90,14 +91,14 @@ const AdminDashboard: React.FC = () => {
         if (token && isAdmin) {
             // Fetch categories for the select dropdown
             apiClient.getBeforeAfterCases().then(payload => {
-                const data = normalizeBeforeAfterCases(payload);
-                const cats = Array.from(new Set(data.map((item: BeforeAfterCase) => item.category?.trim()).filter(Boolean))) as string[];
-                setExistingCategories(cats);
-                dispatch({
-                    type: 'RESET_FORM',
-                    defaultIsNew: cats.length === 0,
-                    defaultCategory: cats[0] || '',
-                });
+                dispatch({ type: 'RESET_FORM' });
+            }).catch(console.error);
+            // Fetch treatments for multi-select
+            apiClient.getTreatments().then(tData => setTreatments(tData)).catch(console.error);
+            // Fetch existing cases to display
+            apiClient.getBeforeAfterCases().then(cData => {
+                const normalized = normalizeBeforeAfterCases(cData);
+                setExistingCases(normalized);
             }).catch(console.error);
         }
     }, [token, isAdmin]);
@@ -133,59 +134,54 @@ const AdminDashboard: React.FC = () => {
         } catch (err: any) {
             clearAdminSession();
             setToken('');
-            setIsAdmin(false);
-            setIsReady(false);
-            setLoginError(err.message || 'Login failed');
-        }
-    };
-
-    const handleUpload = async (e: React.FormEvent) => {
-        e.preventDefault();
-        
-        // Validation
-        for (let i = 0; i < cases.length; i++) {
-            const c = cases[i];
-            if (!c.category.trim() || !c.label.trim() || !c.beforeFile || !c.afterFile) {
-                setStatus(`Please provide all fields for case #${i + 1}`);
-                return;
-            }
-        }
-
-        setStatus('Uploading...');
-        
-        try {
-            // Upload sequentially
-            for (const c of cases) {
-                const formData = new FormData();
-                formData.append('category', c.category.trim());
-                formData.append('label', c.label.trim());
-                formData.append('before', c.beforeFile!);
-                formData.append('after', c.afterFile!);
-                await apiClient.uploadBeforeAfterCase(formData);
-            }
-            setStatus('Success! All cases have been uploaded.');
-            window.dispatchEvent(new Event('before-after-updated'));
-            
-            // Refresh categories
-            const payload = await apiClient.getBeforeAfterCases();
-            const data = normalizeBeforeAfterCases(payload);
-            const cats = Array.from(new Set(data.map((item: BeforeAfterCase) => item.category?.trim()).filter(Boolean))) as string[];
-            setExistingCategories(cats);
-            
-            dispatch({ type: 'RESET_FORM', defaultIsNew: cats.length === 0, defaultCategory: cats[0] || '' });
-
-        } catch (err: any) {
-            setStatus(err.message || 'Upload failed');
-        }
-    };
-
-    useEffect(() => {
-        if (storedSession?.token) {
-            setToken(storedSession.token);
-            setIsAdmin(true);
             setIsReady(true);
         }
-    }, [storedSession?.token]);
+    };
+
+  // Handle upload for creating or updating before-after cases
+  const handleUpload = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus('');
+
+    // Validate that all cases have before and after images
+    for (const c of cases) {
+      if (!c.beforeFile || !c.afterFile) {
+        setStatus('Please provide both before and after images for all cases.');
+        return;
+      }
+    }
+
+    try {
+      const formData = new FormData();
+      cases.forEach((c, idx) => {
+
+        formData.append(`cases[${idx}][label]`, c.label);
+        formData.append(`cases[${idx}][before]`, c.beforeFile as Blob);
+        formData.append(`cases[${idx}][after]`, c.afterFile as Blob);
+        c.treatmentIds.forEach((tid: string) => {
+          formData.append(`cases[${idx}][treatmentIds][]`, tid);
+        });
+      });
+
+      if (editingCaseId) {
+        await apiClient.updateBeforeAfterCase(editingCaseId, formData);
+      } else {
+        await apiClient.uploadBeforeAfterCase(formData);
+      }
+
+      setStatus('Upload Success');
+      // Refresh existing cases list
+      const refreshed = await apiClient.getBeforeAfterCases();
+      setExistingCases(normalizeBeforeAfterCases(refreshed));
+      // Reset form
+      dispatch({ type: 'RESET_FORM' });
+      setEditingCaseId(null);
+    } catch (err) {
+      console.error(err);
+      setStatus('Upload Error: ' + (err as any).message);
+    }
+  };
+
 
     if (!isReady || !token || !isAdmin) {
         return (
@@ -440,37 +436,6 @@ const AdminDashboard: React.FC = () => {
                                     
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div>
-                                            <div className="flex justify-between items-end mb-1">
-                                                <label className="block text-sm font-medium text-gray-700">Category</label>
-                                                {c.isNewCategory ? (
-                                                    <button type="button" onClick={() => dispatch({ type: 'TOGGLE_NEW_CATEGORY', id: c.id, isNew: false })} className="text-xs text-blue-600 hover:underline">Select Existing</button>
-                                                ) : (
-                                                    <button type="button" onClick={() => dispatch({ type: 'TOGGLE_NEW_CATEGORY', id: c.id, isNew: true })} className="text-xs text-blue-600 hover:underline">+ Add New Category</button>
-                                                )}
-                                            </div>
-                                            {c.isNewCategory || existingCategories.length === 0 ? (
-                                                <input 
-                                                    type="text" 
-                                                    value={c.category}
-                                                    onChange={e => dispatch({ type: 'UPDATE_CASE', id: c.id, field: 'category', value: e.target.value })}
-                                                    className="w-full border border-gray-300 p-2 rounded focus:ring-[#6b472e] focus:border-[#6b472e]"
-                                                    placeholder="Type new category..."
-                                                    required
-                                                />
-                                            ) : (
-                                                <select
-                                                    value={c.category}
-                                                    onChange={e => dispatch({ type: 'UPDATE_CASE', id: c.id, field: 'category', value: e.target.value })}
-                                                    className="w-full border border-gray-300 p-2 rounded focus:ring-[#6b472e] focus:border-[#6b472e]"
-                                                    required
-                                                >
-                                                    <option value="" disabled>Select a category</option>
-                                                    {existingCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-                                                </select>
-                                            )}
-                                        </div>
-
-                                        <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Case Label</label>
                                             <input 
                                                 type="text" 
@@ -503,6 +468,16 @@ const AdminDashboard: React.FC = () => {
                                                 required
                                             />
                                         </div>
+                                        
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">Treatments (multi-select)</label>
+                                            <select multiple value={c.treatmentIds} onChange={e => {
+                                                const options = Array.from(e.target.selectedOptions).map(o => o.value);
+                                                dispatch({ type: 'UPDATE_CASE', id: c.id, field: 'treatmentIds', value: options });
+                                            }} className="w-full border border-gray-300 p-2 rounded focus:ring-[#6b472e] focus:border-[#6b472e]" required>
+                                                {treatments.map(t => <option key={t.id} value={t.id}>{t.name || t.title || t.id}</option>)}
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             ))}
@@ -524,7 +499,53 @@ const AdminDashboard: React.FC = () => {
                                 </button>
                             </div>
                         </form>
-                    </div>
+                        
+                        {/* Existing Cases List */}
+                        {existingCases.length > 0 && (
+                            <div className="mt-8">
+                                <h3 className="text-xl font-bold mb-4 text-gray-800">Existing Before & After Cases</h3>
+                                <div className="grid grid-cols-1 gap-4">
+                                    {existingCases.map((caseItem) => (
+                                        <div key={caseItem._id} className="p-4 border border-gray-200 rounded bg-white flex justify-between items-center">
+                                            <div>
+                                                <div className="font-semibold">{caseItem.label}</div>
+                        
+                                            </div>
+                                            <div className="flex items-center">
+                                                <button
+                                                    onClick={() => {
+                                                        setEditingCaseId(caseItem._id);
+                                                        // Reset form to edit mode with existing data
+                                                        dispatch({ type: 'RESET_FORM' });
+                                                        // After resetting, update fields (using setTimeout to wait for state)
+                                                        setTimeout(() => {
+                                                            const newId = cases[0]?.id;
+                                                            if (newId) {
+                                                                dispatch({ type: 'UPDATE_CASE', id: newId, field: 'label', value: caseItem.label });
+
+                                                                dispatch({ type: 'UPDATE_CASE', id: newId, field: 'treatmentIds', value: caseItem.treatmentIds || [] });
+                                                            }
+                                                        }, 0);
+                                                    }}
+                                                    className="text-blue-600 hover:underline mr-4">
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    onClick={async () => {
+                                                        await apiClient.deleteBeforeAfterCase(caseItem._id);
+                                                        const refreshed = await apiClient.getBeforeAfterCases();
+                                                        setExistingCases(normalizeBeforeAfterCases(refreshed));
+                                                    }}
+                                                    className="text-red-600 hover:underline">
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+            </div>
                 )}
             </div>
         </div>

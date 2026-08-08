@@ -70,7 +70,24 @@ export const apiClient = {
             body: formData
         });
         return handleResponse(response);
-    },
+      },
+  // Update an existing Before & After case
+  updateBeforeAfterCase: async (id: string, formData: FormData) => {
+    const response = await fetch(`${BASE_URL}/before-after/${id}`, {
+      method: 'PUT',
+      headers: getHeaders(true),
+      body: formData,
+    });
+    return handleResponse(response);
+  },
+  // Delete a Before & After case
+  deleteBeforeAfterCase: async (id: string) => {
+    const response = await fetch(`${BASE_URL}/before-after/${id}`, {
+      method: 'DELETE',
+      headers: getHeaders(),
+    });
+    return handleResponse(response);
+  },
 
     /**
      * Get all Treatments
@@ -159,12 +176,12 @@ export const apiClient = {
     },
 
     deleteAboutSection: async (id: string) => {
-        const response = await fetch(`${BASE_URL}/about/${id}`, {
-            method: 'DELETE',
-            headers: getHeaders()
-        });
-        return handleResponse(response);
-    },
+    const response = await fetch(`${BASE_URL}/about/${id}`, {
+      method: 'DELETE',
+      headers: getHeaders()
+    });
+    return handleResponse(response);
+  },
 
     getContactSections: async () => {
         const response = await fetch(`${BASE_URL}/contact?t=${Date.now()}`, {
@@ -237,15 +254,15 @@ export const apiClient = {
     },
 
     uploadGalleryImages: async (files: File[]): Promise<Array<{ url: string; publicUrl: string; filename: string; originalName: string }>> => {
-        const formData = new FormData();
-        files.forEach((file) => formData.append('images', file));
-        const response = await fetch(`${BASE_URL}/gallery/upload-images`, {
-            method: 'POST',
-            headers: getHeaders(true),
-            body: formData,
-        });
-        return handleResponse(response);
-    },
+    const formData = new FormData();
+    files.forEach((file) => formData.append('images', file));
+    const response = await fetch(`${BASE_URL}/gallery/upload-images`, {
+      method: 'POST',
+      headers: getHeaders(true),
+      body: formData,
+    });
+    return handleResponse(response);
+  },
 
     createAppointment: async (payload: any) => {
         const response = await fetch(`${BASE_URL}/appointments`, {

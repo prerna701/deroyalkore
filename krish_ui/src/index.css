@@ -186,3 +186,4 @@ body {
   0%, 100% { filter: brightness(1) saturate(1); }
   50% { filter: brightness(1.08) saturate(1.15); }
 }
+.object-cover { object-fit: cover; }
