@@ -311,7 +311,7 @@ const SkinTreatment: React.FC = memo(() => {
 
             <main className="flex-1 flex flex-col lg:flex-row min-h-0 overflow-hidden relative">
                 <div className={`lg:w-1/3 h-1/4 lg:h-full relative overflow-hidden shrink-0 transition-all duration-700 ${step === 2 ? 'lg:w-[15%] opacity-40 grayscale' : ''}`}>
-                    <img src={resolveImageUrl(treatment.image)} alt={treatment.title} className="w-full h-full object-cover" />
+                    <img src={resolveImageUrl(treatment.image)} alt={treatment.title} className="w-full h-full object-contain" />
                     <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-[#0D0B08] via-transparent to-transparent"></div>
                     <div className="absolute bottom-0 left-0 p-6 lg:p-10 space-y-2 z-10 w-full">
                         <span className="text-primary text-[9px] font-bold uppercase tracking-[0.4em]">{treatment.title}</span>

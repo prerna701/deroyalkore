@@ -211,7 +211,7 @@ const AdminGallery: React.FC = () => {
                                     <img
                                         src={img.isNew ? img.previewUrl : resolveImageUrl(img.url)}
                                         alt={img.title}
-                                        className="w-full h-full object-cover"
+                                        className="w-full h-full object-contain"
                                     />
                                     {img.isNew && (
                                         <span className="absolute top-2 left-2 bg-[#6b472e] text-white text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">

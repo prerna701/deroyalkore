@@ -436,15 +436,24 @@ const AdminDashboard: React.FC = () => {
                                     
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Case Label</label>
-                                            <input 
-                                                type="text" 
-                                                value={c.label}
-                                                onChange={e => dispatch({ type: 'UPDATE_CASE', id: c.id, field: 'label', value: e.target.value })}
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">Treatment</label>
+                                            <select
+                                                value={c.treatmentIds[0] || ''}
+                                                onChange={e => {
+                                                    const selectedId = e.target.value;
+                                                    const selectedTreatment = treatments.find((t: any) => (t.id || t._id) === selectedId);
+                                                    const treatmentTitle = selectedTreatment?.title || selectedTreatment?.name || '';
+                                                    dispatch({ type: 'UPDATE_CASE', id: c.id, field: 'treatmentIds', value: selectedId ? [selectedId] : [] });
+                                                    dispatch({ type: 'UPDATE_CASE', id: c.id, field: 'label', value: treatmentTitle });
+                                                }}
                                                 className="w-full border border-gray-300 p-2 rounded focus:ring-[#6b472e] focus:border-[#6b472e]"
-                                                placeholder="e.g. Patient A or Severe Acne"
                                                 required
-                                            />
+                                            >
+                                                <option value="">Select a treatment...</option>
+                                                {treatments.map((t: any) => (
+                                                    <option key={t.id || t._id} value={t.id || t._id}>{t.title || t.name || t.id || t._id}</option>
+                                                ))}
+                                            </select>
                                         </div>
 
                                         <div>
@@ -467,16 +476,6 @@ const AdminDashboard: React.FC = () => {
                                                 className="w-full border border-gray-300 p-2 rounded bg-white"
                                                 required
                                             />
-                                        </div>
-                                        
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Treatments (multi-select)</label>
-                                            <select multiple value={c.treatmentIds} onChange={e => {
-                                                const options = Array.from(e.target.selectedOptions).map(o => o.value);
-                                                dispatch({ type: 'UPDATE_CASE', id: c.id, field: 'treatmentIds', value: options });
-                                            }} className="w-full border border-gray-300 p-2 rounded focus:ring-[#6b472e] focus:border-[#6b472e]" required>
-                                                {treatments.map(t => <option key={t.id} value={t.id}>{t.name || t.title || t.id}</option>)}
-                                            </select>
                                         </div>
                                     </div>
                                 </div>

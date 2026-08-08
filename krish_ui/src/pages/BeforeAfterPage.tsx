@@ -12,8 +12,27 @@ const BeforeAfterPage: React.FC = memo(() => {
     const { treatments } = useTreatments();
     const [selectedTreatment, setSelectedTreatment] = useState<string>('');
 
+    // Build a map of treatmentId -> treatment title
+    const treatmentsMap = useMemo(() => {
+        const map = new Map<string, string>();
+        treatments.forEach((t: any) => {
+            const id = t.id || t._id;
+            const title = t.title || t.name || id;
+            if (id) map.set(id, title);
+        });
+        return map;
+    }, [treatments]);
+
+    // Helper to get treatment name for a case
+    const getTreatmentName = useCallback((treatmentIds?: string[]) => {
+        if (treatmentIds && treatmentIds.length > 0) {
+            return treatmentsMap.get(treatmentIds[0]) || 'General';
+        }
+        return 'General';
+    }, [treatmentsMap]);
+
     const handleBack = useCallback(() => navigate(-1), [navigate]);
-    const handleCategoryChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
+    const handleFilterChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
         setFilter(event.target.value);
     }, []);
     const handleBook = useCallback(() => {
@@ -26,28 +45,28 @@ const BeforeAfterPage: React.FC = memo(() => {
 
     useSEO({
         title: 'Clinical Transformations - Real Results',
-        description: 'Explore real skin transformation results from De Royal Kore Clinic, categorized by ritual type.'
+        description: 'Explore real skin transformation results from De Royal Kore Clinic, categorized by treatment type.'
     });
 
+    // Group cases by treatment
     const groupedCases = useMemo(() => {
-        const grouped = cases.reduce<Record<string, typeof cases>>((acc, item) => {
-            const category = (item.category || 'General').trim() || 'General';
-            if (!acc[category]) {
-                acc[category] = [];
+        const grouped: Record<string, typeof cases> = {};
+
+        cases.forEach((item) => {
+            const treatmentName = getTreatmentName(item.treatmentIds);
+            if (!grouped[treatmentName]) {
+                grouped[treatmentName] = [];
             }
-            acc[category].push(item);
-            return acc;
-        }, {});
+            grouped[treatmentName].push(item);
+        });
 
         return Object.entries(grouped).map(([category, items]) => ({ category, items }));
-    }, [cases]);
+    }, [cases, getTreatmentName]);
 
     const displayedData = useMemo(() => {
         if (filter === 'all') return groupedCases;
         return groupedCases.filter((group) => group.category === filter);
     }, [filter, groupedCases]);
-
-    const categories = useMemo(() => ['all', ...groupedCases.map((group) => group.category)], [groupedCases]);
 
     return (
         <section className="min-h-[calc(100vh-64px)] lg:min-h-[calc(100vh-90px)] bg-[#f8f2ea] pt-32 pb-16 selection:bg-primary/30">
@@ -73,16 +92,18 @@ const BeforeAfterPage: React.FC = memo(() => {
                     </h1>
 
                     <div className="flex flex-col items-center gap-4 pt-8">
-                        <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-[#1a1a1a]/40">Filter by Category</p>
+                        <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-[#1a1a1a]/40">Filter by Treatment</p>
                         <div className="relative inline-block w-full max-w-xs">
                             <select
                                 value={filter}
-                                onChange={handleCategoryChange}
+                                onChange={handleFilterChange}
                                 className="w-full appearance-none rounded-2xl border-2 border-primary/20 bg-white px-6 py-4 text-sm font-bold text-[#1a1a1a] shadow-lg transition-all focus:border-primary focus:outline-none"
                             >
                                 <option value="all">View All Results</option>
-                                {categories.filter((cat) => cat !== 'all').map((category) => (
-                                    <option key={category} value={category}>{category}</option>
+                                {treatments.map((t: any) => (
+                                    <option key={t.id || t._id} value={t.title || t.name || t.id || t._id}>
+                                        {t.title || t.name || t.id || t._id}
+                                    </option>
                                 ))}
                             </select>
                             <div className="pointer-events-none absolute right-6 top-1/2 -translate-y-1/2 text-primary">
@@ -162,7 +183,7 @@ const BeforeAfterPage: React.FC = memo(() => {
                     <span className="material-symbols-outlined mb-6 text-4xl text-primary">workspace_premium</span>
                     <h3 className="mb-4 text-2xl font-bold tracking-tight text-white">Your Skin is Next</h3>
                     <p className="mx-auto max-w-xl text-sm font-light leading-relaxed text-white/40 italic">
-                        “Real beauty is a science. Every transformation documented here is a result of precise clinical methodology and skin dedication.”
+                        "Real beauty is a science. Every transformation documented here is a result of precise clinical methodology and skin dedication."
                     </p>
                     
                     <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 max-w-lg mx-auto">
@@ -172,7 +193,7 @@ const BeforeAfterPage: React.FC = memo(() => {
                             className="w-full sm:w-2/3 rounded-xl border border-primary/20 bg-white/10 px-4 py-3.5 text-sm font-bold text-white shadow-lg backdrop-blur-md outline-none focus:border-primary"
                         >
                             <option value="" className="bg-[#1d1915] text-white">Select a Treatment...</option>
-                            {treatments.map((t) => (
+                            {treatments.map((t: any) => (
                                 <option key={t._id || t.slug} value={t.slug || t._id} className="bg-[#1d1915] text-white">
                                     {t.title}
                                 </option>

@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import GlossyButton from './GlossyButton';
 import { useBeforeAfterCases } from '../../hooks/useBeforeAfterCases';
+import { useTreatments } from '../../hooks/useTreatments';
 
 interface BeforeAfterProps {
     onViewAll?: () => void;
@@ -9,18 +10,35 @@ interface BeforeAfterProps {
 
 const BeforeAfter: React.FC<BeforeAfterProps> = ({ onViewAll, miniHeader }) => {
     const { cases, loading } = useBeforeAfterCases();
+    const { treatments } = useTreatments();
     const [showAll, setShowAll] = useState(false);
-    const [activeCategory, setActiveCategory] = useState<string>('All');
+    const [selectedTreatmentId, setSelectedTreatmentId] = useState<string>('All');
 
-    const categories = useMemo(() => {
-        const uniqueCategories = Array.from(new Set(cases.map((c) => (c.category || 'General').trim() || 'General'))).filter(Boolean);
-        return ['All', ...uniqueCategories];
-    }, [cases]);
+    // Build a map of treatmentId -> treatment title for display
+    const treatmentsMap = useMemo(() => {
+        const map = new Map<string, string>();
+        treatments.forEach((t: any) => {
+            const id = t.id || t._id;
+            const title = t.title || t.name || id;
+            if (id) map.set(id, title);
+        });
+        return map;
+    }, [treatments]);
+
+    // Helper to get the treatment name for a case
+    const getTreatmentName = (treatmentIds?: string[]) => {
+        if (treatmentIds && treatmentIds.length > 0) {
+            return treatmentsMap.get(treatmentIds[0]) || 'General';
+        }
+        return 'General';
+    };
 
     const filteredCases = useMemo(() => {
-        if (activeCategory === 'All') return cases;
-        return cases.filter((c) => (c.category || 'General').trim() === activeCategory);
-    }, [cases, activeCategory]);
+        if (selectedTreatmentId === 'All') return cases;
+        return cases.filter((c) =>
+            c.treatmentIds && c.treatmentIds.includes(selectedTreatmentId)
+        );
+    }, [cases, selectedTreatmentId]);
 
     const displayedCases = useMemo(() => {
         return showAll ? filteredCases : filteredCases.slice(0, 6);
@@ -41,7 +59,7 @@ const BeforeAfter: React.FC<BeforeAfterProps> = ({ onViewAll, miniHeader }) => {
                         <p className="mb-3 text-xs font-semibold uppercase tracking-[0.35em] text-[#7a4b24]">Transformations</p>
                         <h2 className="text-3xl font-bold text-[#111111] sm:text-4xl">Before &amp; After results</h2>
                         <p className="mt-3 text-sm leading-7 text-[#4b4b4b] sm:text-base">
-                            Browse real outcomes by treatment category and explore how each case was documented.
+                            Browse real outcomes by treatment and explore how each case was documented.
                         </p>
                     </div>
                 ) : (
@@ -52,24 +70,25 @@ const BeforeAfter: React.FC<BeforeAfterProps> = ({ onViewAll, miniHeader }) => {
                     </div>
                 )}
 
-                {categories.length > 1 && (
+                {treatments.length > 0 && (
                     <div className="mb-10 flex w-full max-w-xs flex-col items-center gap-3">
-                        <label htmlFor="before-after-category" className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#7a4b24]">
-                            Filter by Category
+                        <label htmlFor="before-after-treatment" className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#7a4b24]">
+                            Filter by Treatment
                         </label>
                         <div className="relative w-full">
                             <select
-                                id="before-after-category"
-                                value={activeCategory}
+                                id="before-after-treatment"
+                                value={selectedTreatmentId}
                                 onChange={(event) => {
-                                    setActiveCategory(event.target.value);
+                                    setSelectedTreatmentId(event.target.value);
                                     setShowAll(false);
                                 }}
                                 className="w-full appearance-none rounded-2xl border border-[#111111]/10 bg-white px-5 py-3 pr-12 text-sm font-semibold text-[#111111] shadow-[0_10px_30px_rgba(0,0,0,0.08)] transition-all focus:border-[#111111] focus:outline-none"
                             >
-                                {categories.map((cat) => (
-                                    <option key={cat} value={cat}>
-                                        {cat === 'All' ? 'View All Results' : cat}
+                                <option value="All">View All Results</option>
+                                {treatments.map((t: any) => (
+                                    <option key={t.id || t._id} value={t.id || t._id}>
+                                        {t.title || t.name || t.id || t._id}
                                     </option>
                                 ))}
                             </select>
@@ -87,7 +106,7 @@ const BeforeAfter: React.FC<BeforeAfterProps> = ({ onViewAll, miniHeader }) => {
                         </div>
                     ) : filteredCases.length === 0 ? (
                         <div className="col-span-full rounded-3xl border border-[#111111]/10 bg-white/70 px-8 py-12 text-center text-[#555]">
-                            No cases available in this category yet.
+                            No cases available for this treatment yet.
                         </div>
                     ) : (
                         displayedCases.map((c) => (
@@ -97,7 +116,7 @@ const BeforeAfter: React.FC<BeforeAfterProps> = ({ onViewAll, miniHeader }) => {
                             >
                                 <div className="mb-4 flex items-center justify-between">
                                     <span className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#7a4b24]">
-                                        {c.category || 'General'}
+                                        {getTreatmentName(c.treatmentIds)}
                                     </span>
                                     <span className="rounded-full bg-[#f5e7d8] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#7a4b24]">
                                         Featured

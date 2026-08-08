@@ -4,6 +4,7 @@ export interface BeforeAfterCase {
     label: string;
     before: string;
     after: string;
+    treatmentIds?: string[];
     createdAt?: string;
     updatedAt?: string;
 }

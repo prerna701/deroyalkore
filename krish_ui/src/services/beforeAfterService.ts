@@ -25,6 +25,7 @@ export const normalizeBeforeAfterCases = (payload: BeforeAfterPayload): BeforeAf
             _id: item._id ?? legacyItem.id,
             before: item.before ?? legacyItem.beforeImage ?? '',
             after: item.after ?? legacyItem.afterImage ?? '',
+            treatmentIds: item.treatmentIds ?? [],
         };
     });
 };
@@ -34,9 +35,19 @@ export const fetchBeforeAfterCases = async (): Promise<BeforeAfterCase[]> => {
     return normalizeBeforeAfterCases(payload as BeforeAfterPayload);
 };
 
-export const groupBeforeAfterCases = (cases: BeforeAfterCase[]) => {
+export const groupBeforeAfterCases = (
+    cases: BeforeAfterCase[],
+    treatmentsMap?: Map<string, string>
+) => {
     const grouped = cases.reduce<Record<string, BeforeAfterCase[]>>((acc, item) => {
-        const category = (item.category || 'General').trim() || 'General';
+        // Determine category from treatmentIds if a treatments map is available
+        const category = (() => {
+            if (treatmentsMap && item.treatmentIds && item.treatmentIds.length > 0) {
+                const name = treatmentsMap.get(item.treatmentIds[0]);
+                if (name) return name;
+            }
+            return (item.category || item.label || 'General').trim() || 'General';
+        })();
 
         if (!acc[category]) {
             acc[category] = [];
