@@ -8,6 +8,7 @@ import GlossyButton from '../components/ui/GlossyButton';
 import { apiClient } from '../services/apiClient';
 import { Treatment } from '../types';
 import toast from 'react-hot-toast';
+import { resolveImageUrl } from '../utils/resolveImageUrl';
 
 const SkinTreatment: React.FC = memo(() => {
     const { id } = useParams<{ id: string }>();
@@ -44,7 +45,7 @@ const SkinTreatment: React.FC = memo(() => {
 
     useSEO({
         title: treatment?.title || 'Treatment Details',
-        description: treatment?.about || 'Professional skin treatments at DRoyalCore Clinic'
+        description: treatment?.about || 'Professional skin treatments at De Royal Kore Clinic'
     });
 
     const handleBack = useCallback(() => {
@@ -155,7 +156,7 @@ const SkinTreatment: React.FC = memo(() => {
                         <div className="w-full lg:w-1/2">
                             <div className="relative aspect-video max-h-[300px] w-full overflow-hidden rounded-3xl shadow-2xl ring-1 ring-[#E7D8BF]">
                                 <img 
-                                    src={treatment.image} 
+                                    src={resolveImageUrl(treatment.image)}
                                     alt={treatment.title}
                                     className="h-full w-full object-cover transition-transform duration-1000 hover:scale-105"
                                 />
@@ -315,7 +316,7 @@ const SkinTreatment: React.FC = memo(() => {
 
             <main className="flex-1 flex flex-col lg:flex-row min-h-0 overflow-hidden relative">
                 <div className={`lg:w-1/3 h-1/4 lg:h-full relative overflow-hidden shrink-0 transition-all duration-700 ${step === 2 ? 'lg:w-[15%] opacity-40 grayscale' : ''}`}>
-                    <img src={treatment.image} alt={treatment.title} className="w-full h-full object-cover" />
+                    <img src={resolveImageUrl(treatment.image)} alt={treatment.title} className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-[#0D0B08] via-transparent to-transparent"></div>
                     <div className="absolute bottom-0 left-0 p-6 lg:p-10 space-y-2 z-10 w-full">
                         <span className="text-primary text-[9px] font-bold uppercase tracking-[0.4em]">{treatment.title}</span>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTreatments } from '../../hooks/useTreatments';
 import GlossyButton from './GlossyButton';
+import { resolveImageUrl } from '../../utils/resolveImageUrl';
 
 interface TreatmentsPreviewProps {
     onSelect: (id: string) => void;
@@ -51,7 +52,7 @@ const TreatmentsPreview: React.FC<TreatmentsPreviewProps> = ({ onSelect, onViewA
                             <div className="relative aspect-[4/5] overflow-hidden rounded-xl border border-primary/20 bg-[#090704] p-2 shadow-[0_24px_70px_rgba(0,0,0,0.38)] transition-all duration-700 group-hover:-translate-y-1 group-hover:border-primary/50 group-hover:shadow-[0_30px_85px_rgba(212,175,55,0.16)]">
                                 <div className="absolute inset-2 z-10 rounded-lg border border-primary/10 pointer-events-none" />
                                 <img
-                                    src={treatment.image}
+                                    src={resolveImageUrl(treatment.image)}
                                     alt={treatment.title}
                                     className="h-full w-full rounded-lg object-cover opacity-90 transition-all duration-700 group-hover:scale-105 group-hover:opacity-100"
                                 />

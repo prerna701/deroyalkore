@@ -1,11 +1,6 @@
 export default function Footer() {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#07060a] text-neutral-200">
-      {/* Spacer so the footer sits at the bottom if content is short */}
-      <div className="flex items-center justify-center py-32">
-        <p className="font-sans text-2xl italic text-neutral-600">Scroll to view footer</p>
-      </div>
-
+    <div className="relative overflow-hidden bg-[#07060a] text-neutral-200">
       {/* ======== FOOTER ======== */}
       <footer className="relative">
         {/* THICK GOLD CURVE BORDER AT TOP */}
@@ -120,15 +115,19 @@ export default function Footer() {
                   Treatments
                 </p>
                 <ul className="space-y-4 text-sm text-neutral-400 font-sans">
-                  {["Korean Facials", "Clear Skin Therapy", "Hydra Infusion"].map(
+                  {[
+                    { label: "Korean Facials", path: "/treatments" },
+                    { label: "Clear Skin Therapy", path: "/treatments" },
+                    { label: "Hydra Infusion", path: "/treatments" }
+                  ].map(
                     (t) => (
-                      <li key={t}>
+                      <li key={t.label}>
                         <a
-                          href="#"
+                          href={t.path}
                           className="group relative inline-flex items-center gap-2 transition-colors duration-300 hover:text-gold-300"
                         >
                           <span className="h-0 w-0 border-t border-r border-transparent border-solid border-gold-500/0 transition-all duration-300 group-hover:border-gold-500 group-hover:w-1.5 group-hover:h-1.5" />
-                          {t}
+                          {t.label}
                         </a>
                       </li>
                     )
@@ -141,14 +140,19 @@ export default function Footer() {
                   Studio
                 </p>
                 <ul className="space-y-4 text-sm text-neutral-400 font-sans">
-                  {["About", "Rituals", "Results", "Journal"].map((t) => (
-                    <li key={t}>
+                  {[
+                    { label: "About Us", path: "/about" },
+                    { label: "Rituals", path: "/treatments" },
+                    { label: "Results", path: "/results" },
+                    { label: "Offers", path: "/offers" }
+                  ].map((t) => (
+                    <li key={t.label}>
                       <a
-                        href="#"
+                        href={t.path}
                         className="group relative inline-flex items-center gap-2 transition-colors duration-300 hover:text-gold-300"
                       >
                         <span className="h-0 w-0 border-t border-r border-transparent border-solid border-gold-500/0 transition-all duration-300 group-hover:border-gold-500 group-hover:w-1.5 group-hover:h-1.5" />
-                        {t}
+                        {t.label}
                       </a>
                     </li>
                   ))}
@@ -157,33 +161,79 @@ export default function Footer() {
               {/* Visit / Contact */}
               <div className="md:col-span-3">
                 <p className="text-[11px] font-medium uppercase tracking-[0.38em] text-gold-400 mb-7 font-sans">
-                  Visit
+                  Visit &amp; Connect
                 </p>
-                <p className="text-base leading-relaxed text-neutral-400 font-sans">
-                  Panipat & Karnal skin clinic appointments available by
-                  consultation.
+                <p className="text-sm leading-relaxed text-neutral-400 font-sans">
+                  Panipat &amp; Karnal clinic appointments.
                 </p>
-                <div className="mt-6 flex gap-5 text-[11px] font-medium uppercase tracking-[0.25em] text-gold-400 font-sans">
-                  <a href="#" className="transition-colors duration-300 hover:text-gold-200">
-                    Instagram
-                  </a>
-                  <a href="#" className="transition-colors duration-300 hover:text-gold-200">
-                    Contact
+                <ul className="mt-4 space-y-2 text-xs text-neutral-400 font-sans">
+                  <li>
+                    <a href="tel:7988106343" className="hover:text-gold-300 transition-colors">
+                      📞 +91 79881 06343
+                    </a>
+                  </li>
+                  <li>
+                    <a href="mailto:krisharora3406@gmail.com" className="hover:text-gold-300 transition-colors">
+                      ✉️ krisharora3406@gmail.com
+                    </a>
+                  </li>
+                </ul>
+                <div className="mt-5 flex gap-5 text-[11px] font-medium uppercase tracking-[0.25em] text-gold-400 font-sans">
+                  <a href="/contact" className="transition-colors duration-300 hover:text-gold-200">
+                    Book Online
                   </a>
                 </div>
               </div>
+
+              {/* Quick links columns */}
+              <div className="md:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-8">
+                {/* Treatments */}
+                <div>
+                  <h3 className="font-sans text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-100">
+                    Treatments
+                  </h3>
+                  <ul className="mt-6 space-y-4">
+                    <li><a href="/treatments" className="font-sans text-xs text-neutral-500 transition-colors duration-300 hover:text-gold-400">Glass Skin</a></li>
+                    <li><a href="/treatments" className="font-sans text-xs text-neutral-500 transition-colors duration-300 hover:text-gold-400">Laser Therapy</a></li>
+                    <li><a href="/treatments" className="font-sans text-xs text-neutral-500 transition-colors duration-300 hover:text-gold-400">Anti-Aging</a></li>
+                  </ul>
+                </div>
+                {/* Company */}
+                <div>
+                  <h3 className="font-sans text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-100">
+                    Clinic
+                  </h3>
+                  <ul className="mt-6 space-y-4">
+                    <li><a href="/about" className="font-sans text-xs text-neutral-500 transition-colors duration-300 hover:text-gold-400">About Us</a></li>
+                    <li><a href="/contact" className="font-sans text-xs text-neutral-500 transition-colors duration-300 hover:text-gold-400">Contact</a></li>
+                    <li><a href="/results" className="font-sans text-xs text-neutral-500 transition-colors duration-300 hover:text-gold-400">Verified Results</a></li>
+                  </ul>
+                </div>
+                {/* Timings */}
+                <div className="col-span-2 sm:col-span-1">
+                  <h3 className="font-sans text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-100">
+                    Hours
+                  </h3>
+                  <ul className="mt-6 space-y-4">
+                    <li className="font-sans text-xs text-neutral-500">Mon - Sat: 10AM - 7PM</li>
+                    <li className="font-sans text-xs text-neutral-500 text-gold-400/80">Sunday: Closed</li>
+                  </ul>
+                </div>
+              </div>
             </div>
-            {/* Divider */}
-            <div className="my-14 flex items-center gap-4">
+
+            {/* Accent divider line */}
+            <div className="my-16 flex items-center justify-center">
               <span className="h-px flex-1 bg-gradient-to-r from-transparent via-gold-500/30 to-transparent" />
-              <span className="h-2 w-2 rotate-45 bg-gold-500/60" />
+              <span className="mx-6 text-gold-500/20 text-[9px] uppercase tracking-[0.6em] font-sans">Aurum Rituals</span>
               <span className="h-px flex-1 bg-gradient-to-l from-transparent via-gold-500/30 to-transparent" />
             </div>
+
             {/* Bottom row — Copyright + Tagline */}
             <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
               <div className="flex flex-col gap-1">
                 <span className="text-[10px] font-medium uppercase tracking-[0.35em] text-neutral-500 font-sans">
-                  © 2026 DRoyalCore — All rights reserved
+                  © 2026 DeRoyalKore — All rights reserved
                 </span>
                 <span className="text-[10px] uppercase tracking-[0.25em] text-neutral-700 font-sans">
                   Panipat · Karnal · Haryana

@@ -274,32 +274,6 @@ const AdminSiteContent: React.FC = () => {
         <button type="submit" className="mt-4 rounded bg-[#6b472e] px-4 py-2 font-semibold text-white hover:bg-[#5a3a24]">Save Contact</button>
       </form>
 
-      <form onSubmit={saveGallery} className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-        <div className="mb-4 flex items-center justify-between gap-4">
-          <h3 className="text-xl font-bold text-gray-800">Clinic Gallery</h3>
-          <div className="flex gap-2">
-            <select value={selectedGalleryId} onChange={(event) => fillGalleryForm(galleries.find((item) => item.id === event.target.value))} className="rounded border border-gray-300 px-3 py-2 text-sm">
-              <option value="">Create new</option>
-              {galleries.map((item) => <option key={item.id} value={item.id}>{item.title} {item.titleSuffix}</option>)}
-            </select>
-            <button type="button" onClick={() => void deleteSelected('gallery')} className="rounded border border-red-200 px-3 py-2 text-sm text-red-700 hover:bg-red-50">Delete</button>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {(['title', 'titleSuffix', 'subtitle', 'note'] as const).map((field) => (
-            <label key={field} className="text-sm font-medium text-gray-700">
-              {field}
-              <input value={galleryForm[field]} onChange={(event) => setGalleryForm((current) => ({ ...current, [field]: event.target.value }))} className="mt-1 w-full rounded border border-gray-300 p-2" />
-            </label>
-          ))}
-          <label className="text-sm font-medium text-gray-700 md:col-span-2">
-            images JSON
-            <textarea value={galleryForm.images} onChange={(event) => setGalleryForm((current) => ({ ...current, images: event.target.value }))} className="mt-1 min-h-56 w-full rounded border border-gray-300 p-2 font-mono text-xs" />
-          </label>
-        </div>
-        <button type="submit" className="mt-4 rounded bg-[#6b472e] px-4 py-2 font-semibold text-white hover:bg-[#5a3a24]">Save Gallery</button>
-      </form>
     </div>
   );
 };

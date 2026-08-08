@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSEO } from '../hooks/useSEO';
 import GlossyButton from '../components/ui/GlossyButton';
 import { useTreatments } from '../hooks/useTreatments';
+import { resolveImageUrl } from '../utils/resolveImageUrl';
 
 const OffersPage: React.FC = () => {
     const navigate = useNavigate();
@@ -46,7 +47,7 @@ const OffersPage: React.FC = () => {
                                 {/* Image Section */}
                                 <div className="lg:w-1/2 relative min-h-[300px] lg:min-h-full">
                                     <img 
-                                        src={treatment.image || "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&q=80"}
+                                        src={resolveImageUrl(treatment.image) || "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&q=80"}
                                         alt={treatment.title}
                                         className="absolute inset-0 w-full h-full object-cover rounded-t-[2rem] lg:rounded-l-[2rem] lg:rounded-tr-none"
                                     />

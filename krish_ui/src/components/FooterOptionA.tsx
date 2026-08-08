@@ -111,10 +111,10 @@ export default function FooterOptionA() {
       <div className="footer-option-a__wrap">
         <div className="footer-option-a__top">
           <div>
-            <a href="#top" className="footer-option-a__brand" aria-label="DRoyalCore home">
+            <a href="#top" className="footer-option-a__brand" aria-label="DeRoyalKore home">
               <span className="footer-option-a__monogram">D</span>
               <span className="footer-option-a__wordmark">
-                DRoyal<span className="footer-option-a__gold-text">Core</span>
+                DeRoyal<span className="footer-option-a__gold-text">Kore</span>
               </span>
             </a>
 
@@ -217,17 +217,24 @@ export default function FooterOptionA() {
 
           <div className="footer-option-a__connect-col">
             <p className="footer-option-a__heading">Connect</p>
-            <a className="footer-option-a__contact-card" href="mailto:hello@droyalcore.in">
+            <a className="footer-option-a__contact-card mb-3" href="mailto:krisharora3406@gmail.com">
               <span>
                 <span className="footer-option-a__contact-label">Begin your ritual</span>
-                <span className="footer-option-a__contact-email">hello@droyalcore.in</span>
+                <span className="footer-option-a__contact-email">krisharora3406@gmail.com</span>
+              </span>
+              <ArrowUpRightIcon />
+            </a>
+            <a className="footer-option-a__contact-card" href="tel:7988106343">
+              <span>
+                <span className="footer-option-a__contact-label">Phone &amp; WhatsApp</span>
+                <span className="footer-option-a__contact-email">+91 79881 06343</span>
               </span>
               <ArrowUpRightIcon />
             </a>
 
-            <div className="footer-option-a__socials">
-              <a className="footer-option-a__social" href="#" aria-label="Instagram"><InstagramIcon /></a>
-              <a className="footer-option-a__social" href="mailto:hello@droyalcore.in" aria-label="Email"><MailIcon /></a>
+            <div className="footer-option-a__socials mt-4">
+              <a className="footer-option-a__social" href="deroyalkore.wholesale" aria-label="Instagram"><InstagramIcon /></a>
+              <a className="footer-option-a__social" href="mailto:krisharora3406@gmail.com" aria-label="Email"><MailIcon /></a>
               <a className="footer-option-a__social" href="#visit" aria-label="Directions"><PinIcon /></a>
             </div>
           </div>
@@ -236,7 +243,7 @@ export default function FooterOptionA() {
         <div className="footer-option-a__rule" />
 
         <div className="footer-option-a__bottom">
-          <p className="footer-option-a__copyright">Copyright 2026 DRoyalCore</p>
+          <p className="footer-option-a__copyright">Copyright 2026 DeRoyalKore</p>
           <p className="footer-option-a__signature">Gold-Standard Skin Rituals</p>
           <button
             className="footer-option-a__to-top"

@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTreatments } from '../hooks/useTreatments';
 import { useSEO } from '../hooks/useSEO';
+import { resolveImageUrl } from '../utils/resolveImageUrl';
 
 const TreatmentsList: React.FC = () => {
     const navigate = useNavigate();
@@ -55,7 +56,7 @@ const TreatmentsList: React.FC = () => {
                             {/* Image Container */}
                             <div className="relative aspect-[4/3] w-full overflow-hidden">
                                 <img
-                                    src={treatment.image}
+                                    src={resolveImageUrl(treatment.image)}
                                     alt={treatment.title}
                                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                                 />

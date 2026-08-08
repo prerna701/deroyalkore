@@ -25,7 +25,7 @@ const BrandVideo: React.FC = () => {
                                     Brand film
                                 </span>
                                 <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/60">
-                                    DRoyalCore
+                                    De Royal Kore
                                 </span>
                             </div>
                         </div>
@@ -34,7 +34,7 @@ const BrandVideo: React.FC = () => {
 
                     <div className="mt-8 grid gap-4 md:grid-cols-[0.8fr_1fr] md:items-end">
                         <h2 className="font-sans text-4xl leading-tight text-white md:text-6xl">
-                            The DRoyalCore Journey
+                            The De Royal Kore Journey
                         </h2>
                         <p className="max-w-2xl text-sm leading-7 text-white/60 md:text-base">
                             Discover the science and artistry behind our signature skin rituals, where modern innovation meets a calm gold-standard clinic experience.

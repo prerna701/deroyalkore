@@ -51,7 +51,7 @@ const Hero: React.FC = () => {
                 {/* Minimalist Branding */}
                 <div className="mb-6 sm:mb-8 text-center animate-fade-in-up px-2 sm:px-4">
                     <h1 className="font-sans mb-3 sm:mb-4 text-2xl sm:text-3xl md:text-4xl italic font-bold tracking-[0.1em] text-[#3A2D23] drop-shadow-sm max-w-4xl mx-auto leading-tight">
-                        De ROYAL Kore <br />
+                        De Royal Kore <br />
                         Wholesale Market and treatment protocol center
                     </h1>
                     <p className="mt-3 sm:mt-4 font-sans text-base sm:text-lg italic tracking-widest text-[#5C4535] drop-shadow-sm">

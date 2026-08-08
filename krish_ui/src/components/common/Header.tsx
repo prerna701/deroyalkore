@@ -105,7 +105,7 @@ const Header: React.FC = () => {
                         className="flex flex-col cursor-pointer flex-shrink-0"
                     >
                         <h1 className="text-[#EADBCA] font-serif text-2xl lg:text-3xl font-semibold leading-tight tracking-wide">
-                            D Royal Core
+                            De Royal Kore
                         </h1>
                         <span className="text-[#EADBCA] font-serif text-xs lg:text-sm font-semibold tracking-widest text-center mt-[-4px]">
                             Skin Rituals
@@ -267,7 +267,7 @@ const Header: React.FC = () => {
 
                 {/* Drawer Footer */}
                 <div className="px-6 pt-4 pb-8 border-t border-[#a68a4c]/20 mt-4">
-                    <p className="text-[#EADBCA]/40 text-xs tracking-widest text-center uppercase">D Royal Core · Skin Rituals</p>
+                    <p className="text-[#EADBCA]/40 text-xs tracking-widest text-center uppercase">De Royal Kore · Skin Rituals</p>
                 </div>
             </div>
         </>

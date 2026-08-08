@@ -99,7 +99,7 @@ const TestimonialsSection: React.FC = () => {
           </div>
 
           <h3 className="text-slate-950 font-bold text-3xl mb-4">
-            De Royal Core
+            De Royal Kore
           </h3>
 
           <div className="flex text-primary mb-4 text-3xl gap-1">
@@ -126,7 +126,7 @@ const TestimonialsSection: React.FC = () => {
             </p>
 
             <h2 className="text-slate-950 text-4xl md:text-5xl lg:text-6xl font-bold relative inline-block pb-6 leading-tight">
-              Client Experiences at<br/>De Royal Core
+              Client Experiences at<br/>De Royal Kore
               <span className="absolute bottom-0 left-0 w-32 h-2 bg-primary rounded-full"></span>
             </h2>
           </div>

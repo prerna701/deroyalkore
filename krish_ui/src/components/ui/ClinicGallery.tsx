@@ -2,6 +2,7 @@ import React, { memo, useEffect, useState } from 'react';
 import { UI_STRINGS } from '../../constants/uiContent';
 import { apiClient } from '../../services/apiClient';
 import type { SiteGallery } from '../../types';
+import { resolveImageUrl } from '../../utils/resolveImageUrl';
 
 const ClinicGallery: React.FC = memo(() => {
     const { clinicGallery } = UI_STRINGS;
@@ -64,7 +65,7 @@ const ClinicGallery: React.FC = memo(() => {
                             className="group relative rounded-[1.5rem] overflow-hidden shadow-xl hover:shadow-[0_30px_60px_rgba(211,175,55,0.2)] transition-all duration-700 hover:-translate-y-2 border border-primary/5 aspect-[4/3]"
                         >
                             <img
-                                src={img.url}
+                                src={resolveImageUrl(img.url)}
                                 alt={img.title}
                                 className="w-full h-auto object-cover group-hover:scale-110 transition-transform duration-1000 grayscale-[20%] group-hover:grayscale-0"
                             />
@@ -72,7 +73,7 @@ const ClinicGallery: React.FC = memo(() => {
                             {/* Hover Overlay */}
                             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-10">
                                 <span className="text-primary text-[10px] font-bold uppercase tracking-[3px] mb-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                                    THE ROYAL CORE
+                                    DE ROYAL KORE
                                 </span>
                                 <h3 className="text-white text-xl font-bold tracking-tight translate-y-4 group-hover:translate-y-0 transition-transform duration-700 delay-100">
                                     {img.title}

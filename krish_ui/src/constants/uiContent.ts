@@ -56,14 +56,14 @@ export const UI_STRINGS = {
     aboutSection: {
         badge: "10+",
         badgeLabel: "Year of Experience",
-        tagline: "About The Royal Core",
+        tagline: "About De Royal Kore",
         titlePrefix: "Top-Rated Skin Clinic in",
         titleSuffix: "Panipat, Karnal",
         paragraphs: [
-            "The Royal Core is a leading dermatology and laser clinic in Panipat and Karnal, led by Dr. Manpreet Kaur (MBBS AIIMS Delhi, MD Dermatology, PGI), a highly trusted dermatologist in Mohali and experienced skin specialist.",
+            "De Royal Kore is a leading dermatology and laser clinic in Panipat and Karnal, led by Dr. Manpreet Kaur (MBBS AIIMS Delhi, MD Dermatology, PGI), a highly trusted dermatologist in Mohali and experienced skin specialist.",
             "Established in 2016, the clinic stands tall in Mohali, renowned for unparalleled patient satisfaction, exceptional services, and modern infrastructure.",
-            "The Royal Core provide advanced treatment for acne, acne scars, pigmentation, melasma, hair fall, CO₂ laser treatment, laser hair reduction, and other dermatological conditions.",
-            "Equipped with advanced laser technology, The Royal Core is the preferred choice for patients searching for a reliable skin doctor or dermatologist in Panipat/Karnal."
+            "De Royal Kore provides advanced treatment for acne, acne scars, pigmentation, melasma, hair fall, CO₂ laser treatment, laser hair reduction, and other dermatological conditions.",
+            "Equipped with advanced laser technology, De Royal Kore is the preferred choice for patients searching for a reliable skin doctor or dermatologist in Panipat/Karnal."
         ],
         buttonText: "Read More",
         images: [

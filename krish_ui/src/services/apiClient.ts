@@ -235,6 +235,17 @@ export const apiClient = {
         return handleResponse(response);
     },
 
+    uploadGalleryImages: async (files: File[]): Promise<Array<{ url: string; publicUrl: string; filename: string; originalName: string }>> => {
+        const formData = new FormData();
+        files.forEach((file) => formData.append('images', file));
+        const response = await fetch(`${BASE_URL}/gallery/upload-images`, {
+            method: 'POST',
+            headers: getHeaders(true),
+            body: formData,
+        });
+        return handleResponse(response);
+    },
+
     createAppointment: async (payload: any) => {
         const response = await fetch(`${BASE_URL}/appointments`, {
             method: 'POST',

@@ -6,6 +6,7 @@ import { normalizeBeforeAfterCases } from '../services/beforeAfterService';
 import { AdminTreatments } from '../components/admin/AdminTreatments';
 import AdminFaqs from '../components/admin/AdminFaqs';
 import AdminSiteContent from '../components/admin/AdminSiteContent';
+import AdminGallery from '../components/admin/AdminGallery';
 
 interface CaseForm {
     id: number;
@@ -66,6 +67,7 @@ const AdminDashboard: React.FC = () => {
     const [activeTab, setActiveTab] = useState('before-after');
     const [appointments, setAppointments] = useState<any[]>([]);
     const [appointmentsLoading, setAppointmentsLoading] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     // Upload State
     const [cases, dispatch] = useReducer(formReducer, initialCases);
@@ -215,47 +217,81 @@ const AdminDashboard: React.FC = () => {
         );
     }
 
+    const handleTabChange = (tab: string) => {
+        setActiveTab(tab);
+        setIsSidebarOpen(false); // close drawer on mobile when navigating
+    };
+
     return (
-        <div className="flex min-h-[calc(100vh-90px)] bg-gray-50">
-            {/* Sidebar */}
-            <div className="w-64 bg-[#2b2520] text-white flex flex-col sticky top-[90px] h-[calc(100vh-90px)] shrink-0">
-                <div className="p-6 text-xl font-bold border-b border-gray-700">
+        <div className="flex flex-col md:flex-row min-h-[calc(100vh-90px)] bg-gray-50 relative">
+            {/* Mobile Header Toggle Bar */}
+            <div className="md:hidden flex items-center justify-between bg-[#2b2520] text-white p-4 sticky top-[64px] z-30 shadow-md">
+                <span className="font-bold tracking-wide">Admin Panel</span>
+                <button
+                    onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                    className="flex items-center justify-center p-2 rounded-lg bg-[#3a312a] hover:bg-[#4a3f36] text-[#EADBCA] transition-colors"
+                >
+                    <span className="material-symbols-outlined">{isSidebarOpen ? 'close' : 'menu'}</span>
+                </button>
+            </div>
+
+            {/* Backdrop Overlay for Mobile Drawer */}
+            {isSidebarOpen && (
+                <div 
+                    onClick={() => setIsSidebarOpen(false)}
+                    className="md:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-30"
+                    style={{ top: '110px' }}
+                />
+            )}
+
+            {/* Sidebar (Responsive: sliding drawer on mobile, fixed side block on desktop) */}
+            <div className={`
+                fixed md:sticky top-[110px] md:top-[90px] left-0 h-[calc(100vh-110px)] md:h-[calc(100vh-90px)] w-64 bg-[#2b2520] text-white flex flex-col shrink-0 z-40 transition-transform duration-300 ease-in-out
+                ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+            `}>
+                <div className="hidden md:block p-6 text-xl font-bold border-b border-gray-700">
                     Admin Panel
                 </div>
-                <div className="flex-1 p-4 flex flex-col gap-2">
+                <div className="flex-1 p-4 flex flex-col gap-2 overflow-y-auto">
                     <button 
                         className={`text-left p-3 rounded transition-colors ${activeTab === 'dashboard' ? 'bg-[#4a3f36]' : 'hover:bg-[#3a312a]'}`}
-                        onClick={() => setActiveTab('dashboard')}
+                        onClick={() => handleTabChange('dashboard')}
                     >
                         Dashboard
                     </button>
                     <button 
                         className={`text-left p-3 rounded transition-colors ${activeTab === 'before-after' ? 'bg-[#4a3f36]' : 'hover:bg-[#3a312a]'}`}
-                        onClick={() => setActiveTab('before-after')}
+                        onClick={() => handleTabChange('before-after')}
                     >
                         Before &amp; After
                     </button>
                     <button 
                         className={`text-left p-3 rounded transition-colors ${activeTab === 'treatments' ? 'bg-[#4a3f36]' : 'hover:bg-[#3a312a]'}`}
-                        onClick={() => setActiveTab('treatments')}
+                        onClick={() => handleTabChange('treatments')}
                     >
                         Treatments
                     </button>
                     <button 
                         className={`text-left p-3 rounded transition-colors ${activeTab === 'appointments' ? 'bg-[#4a3f36]' : 'hover:bg-[#3a312a]'}`}
-                        onClick={() => setActiveTab('appointments')}
+                        onClick={() => handleTabChange('appointments')}
                     >
                         Appointments
                     </button>
                     <button 
                         className={`text-left p-3 rounded transition-colors ${activeTab === 'site-content' ? 'bg-[#4a3f36]' : 'hover:bg-[#3a312a]'}`}
-                        onClick={() => setActiveTab('site-content')}
+                        onClick={() => handleTabChange('site-content')}
                     >
                         Site Content
                     </button>
                     <button 
+                        className={`text-left p-3 rounded transition-colors ${activeTab === 'gallery' ? 'bg-[#4a3f36]' : 'hover:bg-[#3a312a]'}`}
+                        onClick={() => handleTabChange('gallery')}
+                    >
+                        Gallery Images
+                    </button>
+                    <button 
                         className={`text-left p-3 rounded transition-colors ${activeTab === 'faqs' ? 'bg-[#4a3f36]' : 'hover:bg-[#3a312a]'}`}
-                        onClick={() => setActiveTab('faqs')}
+                        onClick={() => handleTabChange('faqs')}
                     >
                         FAQs
                     </button>
@@ -271,7 +307,7 @@ const AdminDashboard: React.FC = () => {
             </div>
 
             {/* Main Content Area */}
-            <div className="flex-1 p-8 overflow-y-auto relative">
+            <div className="flex-1 p-4 md:p-8 overflow-y-auto relative w-full">
                 {status && (
                     <div className="fixed top-4 right-4 bg-gray-800 text-white p-4 rounded shadow-lg z-50 animate-fade-in-up flex items-center gap-3">
                         {status.includes('Uploading') ? (
@@ -329,6 +365,10 @@ const AdminDashboard: React.FC = () => {
 
                 {activeTab === 'site-content' && (
                     <AdminSiteContent />
+                )}
+
+                {activeTab === 'gallery' && (
+                    <AdminGallery />
                 )}
 
                 {activeTab === 'appointments' && (

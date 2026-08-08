@@ -77,15 +77,18 @@ const FAQSection: React.FC = () => {
 >
   {item.question}
 </span>
-                  {/* Chevron Icon */}
-                  <svg
-                    className={`w-5 h-5 transition-transform duration-300 ${isOpen ? 'rotate-180 text-primary' : 'text-black'}`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                  </svg>
+                  {/* Plus / Minus Icon */}
+                  <span className="flex-shrink-0 ml-4">
+                    {isOpen ? (
+                      <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M18 12H6" />
+                      </svg>
+                    ) : (
+                      <svg className="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 6v12M6 12h12" />
+                      </svg>
+                    )}
+                  </span>
                 </button>
 
                 {/* Answer Body (Animated Height) */}

@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useTreatments } from '../../hooks/useTreatments';
 import { apiClient } from '../../services/apiClient';
 import { treatmentSchema, TreatmentFormValues, emptyTreatmentForm } from '../../schemas/treatmentSchema';
+import { resolveImageUrl } from '../../utils/resolveImageUrl';
 
 export const AdminTreatments: React.FC = () => {
     const { treatments, loading, refetch } = useTreatments();
@@ -192,7 +193,7 @@ export const AdminTreatments: React.FC = () => {
                         treatments.map((t: any) => (
                             <div key={t._id} className="bg-white p-4 rounded-xl shadow border border-gray-200 flex items-center justify-between">
                                 <div className="flex items-center gap-4">
-                                    {t.image && <img src={t.image} alt={t.title} className="w-16 h-16 object-cover rounded-lg" />}
+                                    {t.image && <img src={resolveImageUrl(t.image)} alt={t.title} className="w-16 h-16 object-cover rounded-lg" />}
                                     <div>
                                         <div className="flex items-center gap-2">
                                             <h4 className="font-bold text-lg text-gray-800">{t.title}</h4>
