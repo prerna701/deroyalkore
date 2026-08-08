@@ -6,10 +6,10 @@ import { ApiError } from '../utils/ApiError';
 
 export interface BeforeAfterCaseResponse {
   _id: string;
-  category: string;
   label: string;
   before: string;
   after: string;
+  treatmentIds: string[]; // New field
   createdAt: string;
   updatedAt: string;
 }
@@ -25,10 +25,10 @@ class BeforeAfterService {
   private toResponseCase(record: BeforeAfterCaseRecord, baseUrl: string): BeforeAfterCaseResponse {
     return {
       _id: record.id,
-      category: record.category,
       label: record.label,
       before: this.toPublicUrl(record.beforePath, baseUrl),
       after: this.toPublicUrl(record.afterPath, baseUrl),
+      treatmentIds: record.treatmentIds || [],
       createdAt: record.createdAt,
       updatedAt: record.updatedAt,
     };
@@ -50,19 +50,38 @@ class BeforeAfterService {
     return records.map(record => this.toResponseCase(record, baseUrl));
   }
 
+  async updateCase(id: string, body: Record<string, unknown>, files: { before?: Express.Multer.File[]; after?: Express.Multer.File[] } | undefined, baseUrl: string): Promise<BeforeAfterCaseResponse> {
+    const label = this.getTextField(body, ['label', 'title', 'name']);
+    const beforeImage = files?.before?.[0]
+      ? `/uploads/before-after/${files.before[0].filename}`
+      : this.getTextField(body, ['beforeImage', 'before']);
+    const afterImage = files?.after?.[0]
+      ? `/uploads/before-after/${files.after[0].filename}`
+      : this.getTextField(body, ['afterImage', 'after']);
+    const treatmentIds = Array.isArray(body.treatmentIds)
+      ? body.treatmentIds.map((id: any) => String(id))
+      : typeof body.treatmentIds === 'string'
+      ? body.treatmentIds.split(',').map(s => s.trim()).filter(Boolean)
+      : [];
+    const updated = await beforeAfterRepository.update(id, { label, beforePath: beforeImage, afterPath: afterImage, treatmentIds });
+    return this.toResponseCase(updated, baseUrl);
+  }
+
+  async deleteCase(id: string): Promise<void> {
+    await beforeAfterRepository.delete(id);
+  }
+
   async createCase(
     body: Record<string, unknown>,
     files: { before?: Express.Multer.File[]; after?: Express.Multer.File[] } | undefined,
     baseUrl: string
   ): Promise<{ case: BeforeAfterCaseResponse; total: number }> {
-    const category = this.getTextField(body, ['category', 'treatmentCategory', 'treatment']);
     const label = this.getTextField(body, ['label', 'title', 'name']);
 
-    if (!category || !label) {
-      throw ApiError.badRequest('Category and label are required', {
+    if (!label) {
+      throw ApiError.badRequest('Label is required', {
         receivedFields: Object.keys(body ?? {}),
         missing: {
-          category: !category,
           label: !label,
         },
       });
@@ -90,11 +109,17 @@ class BeforeAfterService {
       });
     }
 
+    const treatmentIds = Array.isArray(body.treatmentIds)
+      ? body.treatmentIds.map((id: any) => String(id))
+      : typeof body.treatmentIds === 'string'
+      ? body.treatmentIds.split(',').map((s) => s.trim()).filter(Boolean)
+      : [];
+
     const record = await beforeAfterRepository.create({
-      category,
       label,
       beforePath: beforeImage,
       afterPath: afterImage,
+      treatmentIds,
     });
 
     const total = (await beforeAfterRepository.findAll()).length;
