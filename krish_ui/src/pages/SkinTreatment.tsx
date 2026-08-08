@@ -155,7 +155,7 @@ const SkinTreatment: React.FC = memo(() => {
                             </p>
                         </div>
                         <div className="w-full lg:w-1/2">
-                            <div className="relative aspect-video max-h-[300px] w-full overflow-hidden rounded-3xl shadow-2xl ring-1 ring-[#E7D8BF]">
+                            <div className="relative aspect-video w-full overflow-hidden rounded-3xl shadow-2xl ring-1 ring-[#E7D8BF]">
                                 <img 
                                     src={resolveImageUrl(treatment.image)}
                                     alt={treatment.title}
