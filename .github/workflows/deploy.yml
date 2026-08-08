@@ -96,7 +96,7 @@ jobs:
           cache-from: type=gha,scope=frontend
           cache-to: type=gha,mode=max,scope=frontend
           build-args: |
-            VITE_BACKEND_DOMAIN=http://${{ secrets.AZURE_HOST }}:7000
+            VITE_BACKEND_DOMAIN=https://www.deroyalkore.com
 
   deploy:
     name: Deploy to Production
