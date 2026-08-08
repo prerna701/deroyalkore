@@ -7,12 +7,12 @@ import { useTreatments } from "../../hooks/useTreatments";
 const Hero: React.FC = () => {
     const navigate = useNavigate();
     const { treatments } = useTreatments();
-    
-    // Find first discounted treatment
+
+    // Find first discounted treatment for badge label; always show badge
     const discountedTreatment = treatments.find(t => t.discountPrice);
 
     return (
-        <section className="relative flex h-[calc(100vh-90px)] flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-[#F2E9D8] via-[#EADBCA] to-[#D9A577] py-8 px-4 sm:px-6 lg:px-8">
+        <section className="relative flex h-[calc(100vh-64px)] lg:h-[calc(100vh-90px)] flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-[#F2E9D8] via-[#EADBCA] to-[#D9A577] py-6 px-4 sm:px-6 lg:px-8">
 
             {/* Elegant Background Texture Overlay */}
             <div className="pointer-events-none absolute inset-0 z-0 opacity-10 mix-blend-overlay">
@@ -31,36 +31,38 @@ const Hero: React.FC = () => {
             </div>
 
             <div className="relative z-10 flex w-full max-w-6xl flex-col items-center">
-                
-                {/* Special Offer Banner */}
-                {discountedTreatment && (
-                    <div 
-                        onClick={() => navigate(`/treatment/${discountedTreatment.slug || discountedTreatment._id}`)}
-                        className="mb-8 cursor-pointer animate-fade-in-up flex items-center gap-3 bg-[#3A2D23]/90 backdrop-blur-md text-[#F2E9D8] px-6 py-2.5 rounded-full shadow-xl hover:bg-[#3A2D23] hover:scale-105 transition-all duration-300 border border-[#D9A577]/30"
-                    >
-                        <span className="flex h-2 w-2 rounded-full bg-red-500 animate-pulse"></span>
-                        <span className="text-sm md:text-base font-semibold tracking-wide">
-                            Special Offer: {discountedTreatment.title} for ${discountedTreatment.discountPrice}
-                        </span>
-                        <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                    </div>
-                )}
+
+                {/* Special Offer Badge — always visible, redirects to /offers */}
+                <div
+                    onClick={() => navigate('/offers')}
+                    className="mb-6 sm:mb-8 cursor-pointer flex items-center gap-2 sm:gap-3 bg-[#3A2D23]/90 backdrop-blur-md text-[#F2E9D8] px-4 sm:px-6 py-2 sm:py-2.5 rounded-full shadow-xl hover:bg-[#3A2D23] hover:scale-105 transition-all duration-300 border border-[#D9A577]/30"
+                >
+                    <span className="flex h-2 w-2 rounded-full bg-red-500 animate-pulse flex-shrink-0"></span>
+                    <span className="text-xs sm:text-sm font-semibold tracking-wide text-center">
+                        {discountedTreatment
+                            ? `Special Offer: ${discountedTreatment.title} for ₹${discountedTreatment.discountPrice}`
+                            : '✨ Exclusive Offers — Limited Time Only'}
+                    </span>
+                    <svg className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </div>
 
                 {/* Minimalist Branding */}
-                <div className="mb-8 text-center animate-fade-in-up px-4">
-                    <h1 className="font-sans mb-4 text-4xl italic font-bold tracking-[0.1em] text-[#3A2D23] sm:text-3xl md:text-4xl drop-shadow-sm max-w-4xl mx-auto leading-tight">
-                        De ROYAL Kore <br></br>
-                         Wholesale Market and treatment protocol center
+                <div className="mb-6 sm:mb-8 text-center animate-fade-in-up px-2 sm:px-4">
+                    <h1 className="font-sans mb-3 sm:mb-4 text-2xl sm:text-3xl md:text-4xl italic font-bold tracking-[0.1em] text-[#3A2D23] drop-shadow-sm max-w-4xl mx-auto leading-tight">
+                        De ROYAL Kore <br />
+                        Wholesale Market and treatment protocol center
                     </h1>
-                    <p className="mt-4 font-sans text-lg italic tracking-widest text-[#5C4535] sm:text-xl drop-shadow-sm">
+                    <p className="mt-3 sm:mt-4 font-sans text-base sm:text-lg italic tracking-widest text-[#5C4535] drop-shadow-sm">
                         Solution for all types of skin problems
                     </p>
                 </div>
 
                 {/* Framed Video Container */}
-                <div className="group relative w-full max-w-4xl mx-auto h-[35vh] sm:h-[40vh] md:h-[45vh] rounded-[32px] bg-[#F8F3EA] p-2 sm:p-3 shadow-[0_30px_60px_rgba(58,45,35,0.25)] ring-1 ring-white/60 transition-all duration-700 hover:shadow-[0_40px_80px_rgba(58,45,35,0.35)] animate-fade-in-up delay-200 flex-shrink-0">
+                <div className="group relative w-full max-w-4xl mx-auto h-[28vh] sm:h-[35vh] md:h-[40vh] lg:h-[42vh] rounded-[24px] sm:rounded-[32px] bg-[#F8F3EA] p-1.5 sm:p-2 md:p-3 shadow-[0_30px_60px_rgba(58,45,35,0.25)] ring-1 ring-white/60 transition-all duration-700 hover:shadow-[0_40px_80px_rgba(58,45,35,0.35)] animate-fade-in-up flex-shrink-0">
 
-                    <div className="relative h-full w-full overflow-hidden rounded-[24px] bg-black shadow-inner">
+                    <div className="relative h-full w-full overflow-hidden rounded-[18px] sm:rounded-[24px] bg-black shadow-inner">
                         <video
                             src={heroVideo}
                             autoPlay
@@ -75,8 +77,8 @@ const Hero: React.FC = () => {
 
                         {/* Central Play Button on Hover */}
                         <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                            <button className="flex h-20 w-20 items-center justify-center rounded-full bg-white/20 backdrop-blur-md border border-white/40 shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:scale-110 hover:bg-white/30 transition-all duration-300 focus:outline-none">
-                                <span className="material-symbols-outlined ml-1 text-4xl text-white">
+                            <button className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full bg-white/20 backdrop-blur-md border border-white/40 shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:scale-110 hover:bg-white/30 transition-all duration-300 focus:outline-none">
+                                <span className="material-symbols-outlined ml-1 text-3xl sm:text-4xl text-white">
                                     play_arrow
                                 </span>
                             </button>
@@ -85,8 +87,8 @@ const Hero: React.FC = () => {
                 </div>
 
                 {/* Call to Action */}
-                <div className="mt-4 sm:mt-8 animate-fade-in-up delay-300 flex-shrink-0">
-                    <GlossyButton onClick={() => window.location.href = '/collection'}>
+                <div className="mt-4 sm:mt-6 md:mt-8 animate-fade-in-up flex-shrink-0">
+                    <GlossyButton onClick={() => navigate('/treatments')}>
                         Discover
                     </GlossyButton>
                 </div>

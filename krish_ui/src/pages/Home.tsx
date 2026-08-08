@@ -4,6 +4,7 @@ import AboutUsSection from '../components/ui/AboutUsSection';
 import { useNavigate } from 'react-router-dom';
 import { useSEO } from '../hooks/useSEO';
 import LoadingFallback from '../components/common/LoadingFallback';
+import FAQSection from '../components/ui/FAQSection';
 
 const BeforeAfter = lazy(() => import('../components/ui/BeforeAfter'));
 const ClinicGallery = lazy(() => import('../components/ui/ClinicGallery'));
@@ -34,6 +35,7 @@ const Home: React.FC = () => {
                 <ClinicGallery />
                 <TestimonialsSection />
             </Suspense>
+            <FAQSection />
         </>
     );
 };

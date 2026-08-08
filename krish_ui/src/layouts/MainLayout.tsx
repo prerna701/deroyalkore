@@ -2,8 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Footer from '../components/ui/Footer';
 import ContactOverlay from '../components/ui/ContactOverlay';
-import FAQSection from '../components/ui/FAQSection';
-
 import ThankYouCard from '../components/ui/ThankYouCard';
 
 const MainLayout: React.FC = () => {
@@ -21,7 +19,6 @@ const MainLayout: React.FC = () => {
             <main className="flex-1">
                 <Outlet />
             </main>
-            <FAQSection />
             <ThankYouCard onOpenContact={openContact} />
             <Footer />
             <ContactOverlay isOpen={isContactOpen} onClose={closeContact} />

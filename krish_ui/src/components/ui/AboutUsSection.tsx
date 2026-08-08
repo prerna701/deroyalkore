@@ -4,6 +4,12 @@ import GlossyButton from './GlossyButton';
 import { apiClient } from '../../services/apiClient';
 import type { SiteAbout } from '../../types';
 import { useNavigate } from 'react-router-dom';
+import aboutPigmentation from '../../assets/about-pigmentation.jpg';
+import aboutAcne from '../../assets/about-acne.jpg';
+import aboutBodyWhitening from '../../assets/about-body-whitening.jpg';
+import aboutBlemishes from '../../assets/about-blemishes.jpg';
+
+const LOCAL_ABOUT_IMAGES = [aboutPigmentation, aboutAcne, aboutBodyWhitening, aboutBlemishes];
 
 const AboutUsSection: React.FC<{ hideButton?: boolean }> = memo(({ hideButton = false }) => {
     const navigate = useNavigate();
@@ -69,8 +75,8 @@ const AboutUsSection: React.FC<{ hideButton?: boolean }> = memo(({ hideButton = 
                         {/* Image 1 - Top Left */}
                         <div className="aspect-[4/5] rounded-[3rem] overflow-hidden shadow-2xl transform hover:-rotate-2 transition-all duration-700 border-4 border-white/50">
                             <img
-                                src={activeContent.images[0] || aboutSection.images[0]}
-                                alt="Clinic Treatment"
+                                src={LOCAL_ABOUT_IMAGES[0]}
+                                alt="Pigmentation Removal Treatment"
                                 className="w-full h-full object-cover grayscale-[30%] hover:grayscale-0 hover:scale-110 transition-all duration-1000"
                             />
                         </div>
@@ -78,8 +84,8 @@ const AboutUsSection: React.FC<{ hideButton?: boolean }> = memo(({ hideButton = 
                         {/* Image 2 - Top Right */}
                         <div className="aspect-[4/5] rounded-[3rem] overflow-hidden shadow-2xl transform translate-y-12 hover:rotate-2 transition-all duration-700 border-4 border-white/50">
                             <img
-                                src={activeContent.images[1] || aboutSection.images[1]}
-                                alt="Patient Care"
+                                src={LOCAL_ABOUT_IMAGES[1]}
+                                alt="Doctor Dermatologist Consultation"
                                 className="w-full h-full object-cover grayscale-[30%] hover:grayscale-0 hover:scale-110 transition-all duration-1000"
                             />
                         </div>
@@ -87,8 +93,8 @@ const AboutUsSection: React.FC<{ hideButton?: boolean }> = memo(({ hideButton = 
                         {/* Image 3 - Bottom Left */}
                         <div className="aspect-[4/5] rounded-[3rem] overflow-hidden shadow-2xl transform hover:rotate-2 transition-all duration-700 border-4 border-white/50">
                             <img
-                                src={activeContent.images[2] || aboutSection.images[2]}
-                                alt="Laser Technology"
+                                src={LOCAL_ABOUT_IMAGES[2]}
+                                alt="Body Whitening Treatment"
                                 className="w-full h-full object-cover grayscale-[30%] hover:grayscale-0 hover:scale-110 transition-all duration-1000"
                             />
                         </div>
@@ -96,8 +102,8 @@ const AboutUsSection: React.FC<{ hideButton?: boolean }> = memo(({ hideButton = 
                         {/* Image 4 - Bottom Right */}
                         <div className="aspect-[4/5] rounded-[3rem] overflow-hidden shadow-2xl transform translate-y-12 hover:-rotate-2 transition-all duration-700 border-4 border-white/50">
                             <img
-                                src={activeContent.images[3] || aboutSection.images[3]}
-                                alt="Dermatology Consultation"
+                                src={LOCAL_ABOUT_IMAGES[3]}
+                                alt="Blemishes Removal Treatment"
                                 className="w-full h-full object-cover grayscale-[30%] hover:grayscale-0 hover:scale-110 transition-all duration-1000"
                             />
                         </div>

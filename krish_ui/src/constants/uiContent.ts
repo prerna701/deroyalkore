@@ -67,10 +67,10 @@ export const UI_STRINGS = {
         ],
         buttonText: "Read More",
         images: [
-            "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&q=80",
-            "https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?auto=format&fit=crop&q=80",
-            "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?auto=format&fit=crop&q=80",
-            "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80"
+            "https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=800&q=80",
+            "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=800&q=80",
+            "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800&q=80",
+            "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=800&q=80"
         ]
     },
     clinicGallery: {
