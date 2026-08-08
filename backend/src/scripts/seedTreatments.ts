@@ -156,30 +156,41 @@ const seed = async () => {
         await connectToDatabase();
         const collection = await getCollection('treatments');
         
-        console.log('Clearing existing treatments...');
-        await collection.deleteMany({});
-        
+        console.log('Checking existing treatments to upsert...');
         const now = new Date().toISOString();
-        const treatments = Object.values(treatmentsData).map((t: any) => ({
-            id: randomUUID(),
-            slug: slugify(t.title),
-            title: t.title,
-            about: t.about,
-            sessions: t.sessions,
-            price: t.price,
-            duration: t.duration,
-            protocol: t.protocol,
-            bestFor: t.bestFor,
-            benefits: t.benefits,
-            image: t.image,
-            createdAt: now,
-            updatedAt: now,
-        }));
-
-        console.log(`Inserting ${treatments.length} treatments...`);
-        await collection.insertMany(treatments);
         
-        console.log('Successfully seeded treatments!');
+        let insertedCount = 0;
+        let skippedCount = 0;
+
+        for (const t of Object.values(treatmentsData) as any[]) {
+            const slug = slugify(t.title);
+            // Check if treatment with this slug already exists
+            const existing = await collection.findOne({ slug });
+            
+            if (existing) {
+                skippedCount++;
+            } else {
+                // Insert new treatment
+                await collection.insertOne({
+                    id: randomUUID(),
+                    slug,
+                    title: t.title,
+                    about: t.about,
+                    sessions: t.sessions,
+                    price: t.price,
+                    duration: t.duration,
+                    protocol: t.protocol,
+                    bestFor: t.bestFor,
+                    benefits: t.benefits,
+                    image: t.image,
+                    createdAt: now,
+                    updatedAt: now,
+                });
+                insertedCount++;
+            }
+        }
+        
+        console.log(`Successfully completed seeding! Inserted: ${insertedCount}, Preserved/Skipped: ${skippedCount}`);
     } catch (error) {
         console.error('Error seeding treatments:', error);
     } finally {

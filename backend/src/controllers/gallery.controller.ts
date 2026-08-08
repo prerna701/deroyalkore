@@ -28,6 +28,27 @@ class GalleryController {
     await galleryService.delete(req.params.id);
     ApiResponse.ok(res, null, 'Gallery section deleted successfully');
   });
+
+  // Upload multiple gallery images, returns array of { url, filename }
+  uploadImages = asyncHandler(async (req: Request, res: Response) => {
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
+    const files = req.files as Express.Multer.File[] | undefined;
+
+    if (!files || files.length === 0) {
+      ApiResponse.ok(res, [], 'No files uploaded');
+      return;
+    }
+
+    const uploaded = files.map((file) => ({
+      url: `/uploads/gallery/${file.filename}`,
+      publicUrl: `${baseUrl}/uploads/gallery/${file.filename}`,
+      filename: file.filename,
+      originalName: file.originalname,
+    }));
+
+    ApiResponse.ok(res, uploaded, `${uploaded.length} image(s) uploaded successfully`);
+  });
 }
 
 export const galleryController = new GalleryController();
+
