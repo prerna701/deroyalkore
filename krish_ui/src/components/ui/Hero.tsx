@@ -12,7 +12,7 @@ const Hero: React.FC = () => {
     const discountedTreatment = treatments.find(t => t.discountPrice);
 
     return (
-        <section className="relative flex h-[calc(100vh-64px)] lg:h-[calc(100vh-90px)] flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-[#F2E9D8] via-[#EADBCA] to-[#D9A577] py-6 px-4 sm:px-6 lg:px-8">
+        <section className="relative flex min-h-[calc(100vh-64px)] lg:min-h-[calc(100vh-90px)] h-auto flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-[#F2E9D8] via-[#EADBCA] to-[#D9A577] py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
 
             {/* Elegant Background Texture Overlay */}
             <div className="pointer-events-none absolute inset-0 z-0 opacity-10 mix-blend-overlay">

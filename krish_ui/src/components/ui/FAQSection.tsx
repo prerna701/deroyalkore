@@ -3,7 +3,7 @@ import { getFaqs, type FAQItem } from '../../services/faqService';
 
 const FAQSection: React.FC = () => {
   const [faqData, setFaqData] = useState<FAQItem[]>([]);
-  const [openIndex, setOpenIndex] = useState<number | null>(1);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
