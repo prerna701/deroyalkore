@@ -15,6 +15,8 @@ interface CaseForm {
     beforeFile: File | null;
     afterFile: File | null;
     treatmentIds: string[]; // New field for multiple treatments
+    beforeUrl?: string;     // Existing before image URL for preview
+    afterUrl?: string;      // Existing after image URL for preview
 }
 
 type Action =
@@ -143,21 +145,50 @@ const AdminDashboard: React.FC = () => {
     e.preventDefault();
     setStatus('');
 
-    // Validate that all cases have before and after images
+    // Validate that all cases have before and after images if not editing
+    if (!editingCaseId) {
+      for (const c of cases) {
+        if (!c.beforeFile || !c.afterFile) {
+          setStatus('Please provide both before and after images for all cases.');
+          return;
+        }
+      }
+    }
+
+    // Validate file sizes and types if selected
     for (const c of cases) {
-      if (!c.beforeFile || !c.afterFile) {
-        setStatus('Please provide both before and after images for all cases.');
-        return;
+      if (c.beforeFile) {
+        if (!c.beforeFile.type.startsWith('image/')) {
+          setStatus('Only image files are allowed for Before Image.');
+          return;
+        }
+        if (c.beforeFile.size > 5 * 1024 * 1024) {
+          setStatus('Before Image must be less than 5MB.');
+          return;
+        }
+      }
+      if (c.afterFile) {
+        if (!c.afterFile.type.startsWith('image/')) {
+          setStatus('Only image files are allowed for After Image.');
+          return;
+        }
+        if (c.afterFile.size > 5 * 1024 * 1024) {
+          setStatus('After Image must be less than 5MB.');
+          return;
+        }
       }
     }
 
     try {
       const formData = new FormData();
       cases.forEach((c, idx) => {
-
         formData.append(`cases[${idx}][label]`, c.label);
-        formData.append(`cases[${idx}][before]`, c.beforeFile as Blob);
-        formData.append(`cases[${idx}][after]`, c.afterFile as Blob);
+        if (c.beforeFile) {
+          formData.append(`cases[${idx}][before]`, c.beforeFile);
+        }
+        if (c.afterFile) {
+          formData.append(`cases[${idx}][after]`, c.afterFile);
+        }
         c.treatmentIds.forEach((tid: string) => {
           formData.append(`cases[${idx}][treatmentIds][]`, tid);
         });
@@ -458,23 +489,35 @@ const AdminDashboard: React.FC = () => {
 
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Before Image</label>
+                                            {c.beforeUrl && (
+                                                <div className="mb-2">
+                                                    <span className="text-xs text-gray-500 block mb-1">Current Image:</span>
+                                                    <img src={c.beforeUrl} alt="Current Before" className="h-20 w-20 object-cover rounded border border-gray-300 shadow-sm" />
+                                                </div>
+                                            )}
                                             <input 
                                                 type="file" 
                                                 accept="image/*"
                                                 onChange={e => dispatch({ type: 'UPDATE_CASE', id: c.id, field: 'beforeFile', value: e.target.files ? e.target.files[0] : null })}
                                                 className="w-full border border-gray-300 p-2 rounded bg-white"
-                                                required
+                                                required={!editingCaseId}
                                             />
                                         </div>
 
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-1">After Image</label>
+                                            {c.afterUrl && (
+                                                <div className="mb-2">
+                                                    <span className="text-xs text-gray-500 block mb-1">Current Image:</span>
+                                                    <img src={c.afterUrl} alt="Current After" className="h-20 w-20 object-cover rounded border border-gray-300 shadow-sm" />
+                                                </div>
+                                            )}
                                             <input 
                                                 type="file" 
                                                 accept="image/*"
                                                 onChange={e => dispatch({ type: 'UPDATE_CASE', id: c.id, field: 'afterFile', value: e.target.files ? e.target.files[0] : null })}
                                                 className="w-full border border-gray-300 p-2 rounded bg-white"
-                                                required
+                                                required={!editingCaseId}
                                             />
                                         </div>
                                     </div>
@@ -521,8 +564,9 @@ const AdminDashboard: React.FC = () => {
                                                             const newId = cases[0]?.id;
                                                             if (newId) {
                                                                 dispatch({ type: 'UPDATE_CASE', id: newId, field: 'label', value: caseItem.label });
-
                                                                 dispatch({ type: 'UPDATE_CASE', id: newId, field: 'treatmentIds', value: caseItem.treatmentIds || [] });
+                                                                dispatch({ type: 'UPDATE_CASE', id: newId, field: 'beforeUrl', value: caseItem.before });
+                                                                dispatch({ type: 'UPDATE_CASE', id: newId, field: 'afterUrl', value: caseItem.after });
                                                             }
                                                         }, 0);
                                                     }}

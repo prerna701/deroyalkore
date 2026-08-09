@@ -9,27 +9,8 @@ const BeforeAfterPage: React.FC = memo(() => {
     const navigate = useNavigate();
     const [filter, setFilter] = useState<string>('all');
     const { cases, loading } = useBeforeAfterCases();
-    const { treatments } = useTreatments();
+    const { treatments, getTreatmentName } = useTreatments();
     const [selectedTreatment, setSelectedTreatment] = useState<string>('');
-
-    // Build a map of treatmentId -> treatment title
-    const treatmentsMap = useMemo(() => {
-        const map = new Map<string, string>();
-        treatments.forEach((t: any) => {
-            const id = t.id || t._id;
-            const title = t.title || t.name || id;
-            if (id) map.set(id, title);
-        });
-        return map;
-    }, [treatments]);
-
-    // Helper to get treatment name for a case
-    const getTreatmentName = useCallback((treatmentIds?: string[]) => {
-        if (treatmentIds && treatmentIds.length > 0) {
-            return treatmentsMap.get(treatmentIds[0]) || 'General';
-        }
-        return 'General';
-    }, [treatmentsMap]);
 
     const handleBack = useCallback(() => navigate(-1), [navigate]);
     const handleFilterChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {

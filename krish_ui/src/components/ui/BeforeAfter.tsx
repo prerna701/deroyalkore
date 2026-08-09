@@ -10,28 +10,9 @@ interface BeforeAfterProps {
 
 const BeforeAfter: React.FC<BeforeAfterProps> = ({ onViewAll, miniHeader }) => {
     const { cases, loading } = useBeforeAfterCases();
-    const { treatments } = useTreatments();
+    const { treatments, getTreatmentName } = useTreatments();
     const [showAll, setShowAll] = useState(false);
     const [selectedTreatmentId, setSelectedTreatmentId] = useState<string>('All');
-
-    // Build a map of treatmentId -> treatment title for display
-    const treatmentsMap = useMemo(() => {
-        const map = new Map<string, string>();
-        treatments.forEach((t: any) => {
-            const id = t.id || t._id;
-            const title = t.title || t.name || id;
-            if (id) map.set(id, title);
-        });
-        return map;
-    }, [treatments]);
-
-    // Helper to get the treatment name for a case
-    const getTreatmentName = (treatmentIds?: string[]) => {
-        if (treatmentIds && treatmentIds.length > 0) {
-            return treatmentsMap.get(treatmentIds[0]) || 'General';
-        }
-        return 'General';
-    };
 
     const filteredCases = useMemo(() => {
         if (selectedTreatmentId === 'All') return cases;

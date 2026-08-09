@@ -2,7 +2,8 @@ import { useState, useCallback, useEffect } from 'react';
 import type { BeforeAfterCase } from '../types';
 import { fetchBeforeAfterCases } from '../services/beforeAfterService';
 
-export const useBeforeAfterCases = () => {
+export const useBeforeAfterCases = (options?: { refetchOnFocus?: boolean }) => {
+    const refetchOnFocus = options?.refetchOnFocus ?? false;
     const [cases, setCases] = useState<BeforeAfterCase[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -34,16 +35,20 @@ export const useBeforeAfterCases = () => {
             }
         };
 
-        window.addEventListener('focus', handleRefresh);
+        if (refetchOnFocus) {
+            window.addEventListener('focus', handleRefresh);
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+        }
         window.addEventListener('before-after-updated', handleRefresh);
-        document.addEventListener('visibilitychange', handleVisibilityChange);
 
         return () => {
-            window.removeEventListener('focus', handleRefresh);
+            if (refetchOnFocus) {
+                window.removeEventListener('focus', handleRefresh);
+                document.removeEventListener('visibilitychange', handleVisibilityChange);
+            }
             window.removeEventListener('before-after-updated', handleRefresh);
-            document.removeEventListener('visibilitychange', handleVisibilityChange);
         };
-    }, [refetch]);
+    }, [refetch, refetchOnFocus]);
 
     return { cases, loading, refetch };
 };
