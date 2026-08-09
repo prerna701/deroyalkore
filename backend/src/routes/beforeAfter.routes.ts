@@ -8,19 +8,13 @@ const router = Router();
 router.get('/', beforeAfterController.list);
 router.put('/:id',
   requireAdmin,
-  beforeAfterUpload.fields([
-    { name: 'before', maxCount: 1 },
-    { name: 'after', maxCount: 1 },
-  ]),
+  beforeAfterUpload.any(),
   beforeAfterController.update);
 router.delete('/:id', requireAdmin, beforeAfterController.delete);
 router.post(
   '/',
   requireAdmin,
-  beforeAfterUpload.fields([
-    { name: 'before', maxCount: 1 },
-    { name: 'after', maxCount: 1 },
-  ]),
+  beforeAfterUpload.any(),
   beforeAfterController.create,
 );
 

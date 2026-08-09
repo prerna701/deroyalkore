@@ -12,16 +12,16 @@ class BeforeAfterController {
   });
 
   create = asyncHandler(async (req: Request, res: Response) => {
-    const files = req.files as { before?: Express.Multer.File[]; after?: Express.Multer.File[] } | undefined;
+    const files = req.files as Express.Multer.File[] | undefined;
     
-    const result = await beforeAfterService.createCase(req.body, files, getBaseUrl(req));
+    const result = await beforeAfterService.createCases(req.body, files, getBaseUrl(req));
 
-    ApiResponse.created(res, result, 'Before & After case created successfully');
+    ApiResponse.created(res, result, 'Before & After cases created successfully');
   });
 
   update = asyncHandler(async (req: Request, res: Response) => {
     const id = req.params.id;
-    const files = req.files as { before?: Express.Multer.File[]; after?: Express.Multer.File[] } | undefined;
+    const files = req.files as Express.Multer.File[] | undefined;
     const result = await beforeAfterService.updateCase(id, req.body, files, getBaseUrl(req));
     ApiResponse.ok(res, result, 'Before & After case updated successfully');
   });

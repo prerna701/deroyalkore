@@ -3,36 +3,24 @@ import { ApiError } from '../utils/ApiError';
 import { logger } from '../utils/logger';
 import { isProd } from '../config/env';
 
-/**
- * Every error in the app - thrown in a controller, service, repository,
- * or passed to next(err) - ends up here. This is the ONLY place that
- * builds the error JSON, so every failed request looks the same:
- *
- * {
- *   "success": false,
- *   "statusCode": 404,
- *   "message": "User not found",
- *   "details": [...]   // optional, e.g. validation field errors
- * }
- *
- * Must be registered LAST, after all routes.
- */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const errorHandler = (err: unknown, req: Request, res: Response, _next: NextFunction): void => {
   let statusCode = 500;
   let message = 'Internal Server Error';
   let details: unknown;
 
-  if (err instanceof ApiError) {
-    statusCode = err.statusCode;
-    message = err.message;
-    details = err.details;
+  const isApiErr = err instanceof ApiError || (err !== null && typeof err === 'object' && 'statusCode' in err && 'isOperational' in err);
+  const apiErr = err as any;
+
+  if (isApiErr) {
+    statusCode = apiErr.statusCode;
+    message = apiErr.message;
+    details = apiErr.details;
   } else if (err instanceof Error) {
     message = isProd ? 'Internal Server Error' : err.message;
   }
 
   // Unexpected (non-operational) errors are logged loudly - these are bugs to fix.
-  if (!(err instanceof ApiError) || !err.isOperational) {
+  if (!isApiErr || !apiErr.isOperational) {
     logger.error(`${req.method} ${req.originalUrl} -> ${statusCode}`, { error: err });
   } else {
     logger.warn(`${req.method} ${req.originalUrl} -> ${statusCode}: ${message}`);
