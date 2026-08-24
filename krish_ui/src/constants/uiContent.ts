@@ -78,12 +78,10 @@ export const UI_STRINGS = {
         titleSuffix: "Gallery",
         subtitle: "Experience The Luxury",
         images: [
-            { url: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&q=80", title: "Modern Consultation Room" },
-            { url: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&q=80", title: "Advanced Treatment Suite" },
-            { url: "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?auto=format&fit=crop&q=80", title: "Luxury Reception" },
-            { url: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80", title: "Waiting Lounge" },
-            { url: "https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?auto=format&fit=crop&q=80", title: "Sterile Procedure Room" },
-            { url: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&q=80", title: "Laser Technology Booth" }
+            { url: "/gallery-1.jpg", title: "Facial Treatment" },
+            { url: "/gallery-2.jpg", title: "Skin Care Consultation" },
+            { url: "/gallery-3.jpg", title: "Luxury Spa Room" },
+            { url: "/gallery-4.jpg", title: "Dermatology Procedure" }
         ]
     }
 };
