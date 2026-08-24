@@ -78,12 +78,12 @@ export const UI_STRINGS = {
         titleSuffix: "Gallery",
         subtitle: "Experience The Luxury",
         images: [
-            { url: "https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&q=80", title: "Modern Consultation Room" },
-            { url: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80", title: "Advanced Treatment Suite" },
-            { url: "https://images.unsplash.com/photo-1586773860418-d3b9a8ec862e?auto=format&fit=crop&q=80", title: "Luxury Reception" },
-            { url: "https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?auto=format&fit=crop&w=800&q=80", title: "Waiting Lounge" },
-            { url: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=800&q=80", title: "Sterile Procedure Room" },
-            { url: "https://images.unsplash.com/photo-1551601651-2a8555f1a136?auto=format&fit=crop&w=800&q=80", title: "Laser Technology Booth" }
+            { url: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&q=80", title: "Modern Consultation Room" },
+            { url: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&q=80", title: "Advanced Treatment Suite" },
+            { url: "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?auto=format&fit=crop&q=80", title: "Luxury Reception" },
+            { url: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80", title: "Waiting Lounge" },
+            { url: "https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?auto=format&fit=crop&q=80", title: "Sterile Procedure Room" },
+            { url: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&q=80", title: "Laser Technology Booth" }
         ]
     }
 };
