@@ -45,13 +45,13 @@ const PricingPage: React.FC = () => {
     const combinedPricing = [...filteredDynamic, ...pricingData];
 
     return (
-        <div className="min-h-[calc(100vh-64px)] lg:min-h-[calc(100vh-90px)] bg-[#FDFBF7] pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-[calc(100vh-64px)] lg:min-h-[calc(100vh-90px)] bg-[#FDFBF7] pt-20 pb-10 px-4 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-4xl">
-                <div className="text-center mb-16">
-                    <h1 className="font-sans text-4xl font-bold tracking-tight text-[#3A2D23] sm:text-5xl">
+                <div className="text-center mb-6">
+                    <h1 className="font-sans text-3xl font-bold tracking-tight text-[#3A2D23] sm:text-4xl">
                         Investment in Your Skin
                     </h1>
-                    <p className="mt-4 font-sans text-xl italic text-[#8B7A66]">
+                    <p className="mt-2 font-sans text-lg italic text-[#8B7A66]">
                         Transparent, premium pricing for world-class dermatological care.
                     </p>
                 </div>
@@ -81,8 +81,8 @@ const PricingPage: React.FC = () => {
                     </table>
                 </div>
 
-                <div className="mt-12 text-center">
-                    <p className="text-[#8B7A66] mb-6">Ready to start your journey to flawless skin?</p>
+                <div className="mt-6 text-center">
+                    <p className="text-[#8B7A66] mb-4">Ready to start your journey to flawless skin?</p>
                     <a
                         href="/contact"
                         className="inline-flex items-center justify-center rounded-full bg-[#3A2D23] px-8 py-3.5 text-sm font-bold uppercase tracking-widest text-[#F2E9D8] shadow-lg transition-all hover:-translate-y-0.5 hover:bg-[#251D16] hover:shadow-xl"

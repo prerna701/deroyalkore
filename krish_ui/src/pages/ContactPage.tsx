@@ -60,7 +60,7 @@ const ContactPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] lg:min-h-[calc(100vh-90px)] bg-[#FDFBF7] pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-[calc(100vh-64px)] lg:min-h-[calc(100vh-90px)] bg-[#FDFBF7] pt-8 pb-10 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl rounded-[2rem] border border-[#E7D8BF] bg-white p-8 shadow-xl sm:p-10 lg:p-12">
         <div className="mb-10 text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.35em] text-[#D9A577]">Book a consultation</p>

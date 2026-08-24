@@ -81,9 +81,9 @@ export const UI_STRINGS = {
             { url: "https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&q=80", title: "Modern Consultation Room" },
             { url: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80", title: "Advanced Treatment Suite" },
             { url: "https://images.unsplash.com/photo-1586773860418-d3b9a8ec862e?auto=format&fit=crop&q=80", title: "Luxury Reception" },
-            { url: "https://images.unsplash.com/photo-1600334129128-ec85758fd30d?auto=format&fit=crop&q=80", title: "Waitng Lounge" },
-            { url: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80", title: "Sterile Procedure Room" },
-            { url: "https://images.unsplash.com/photo-1631217812030-802525166299?auto=format&fit=crop&q=80", title: "Laser Technology Booth" }
+            { url: "https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?auto=format&fit=crop&w=800&q=80", title: "Waiting Lounge" },
+            { url: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=800&q=80", title: "Sterile Procedure Room" },
+            { url: "https://images.unsplash.com/photo-1551601651-2a8555f1a136?auto=format&fit=crop&w=800&q=80", title: "Laser Technology Booth" }
         ]
     }
 };

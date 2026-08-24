@@ -22,9 +22,9 @@ const TreatmentsList: React.FC = () => {
     }
 
     return (
-        <div className="min-h-[calc(100vh-64px)] lg:min-h-[calc(100vh-90px)] bg-[#FDFBF7] pt-32 pb-20">
+        <div className="min-h-[calc(100vh-64px)] lg:min-h-[calc(100vh-90px)] bg-[#FDFBF7] pt-8 pb-10">
             {/* Back Button */}
-            <div className="max-w-7xl mx-auto px-6 md:px-10 mb-8">
+            <div className="max-w-7xl mx-auto px-6 md:px-10 mb-4">
                 <button
                     onClick={() => navigate('/')}
                     className="flex items-center cursor-pointer text-[#8B7A66] hover:text-[#5D4634] transition-colors font-sans text-sm tracking-widest uppercase font-bold"
@@ -35,8 +35,8 @@ const TreatmentsList: React.FC = () => {
             </div>
 
             {/* Header Content */}
-            <div className="max-w-7xl mx-auto px-6 md:px-10 text-center mb-16">
-                <h1 className="font-sans text-5xl md:text-6xl font-bold text-[#3A2D23] mb-4">
+            <div className="max-w-7xl mx-auto px-6 md:px-10 text-center mb-6">
+                <h1 className="font-sans text-5xl md:text-6xl font-bold text-[#3A2D23] mb-2">
                     Our Treatments
                 </h1>
                 <p className="font-sans text-xl md:text-2xl italic text-[#8B7A66] max-w-3xl mx-auto">

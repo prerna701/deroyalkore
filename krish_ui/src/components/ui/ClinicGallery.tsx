@@ -41,11 +41,11 @@ const ClinicGallery: React.FC = memo(() => {
 
     return (
         <section
-            className="bg-gradient-to-br from-[#F2E9D8] via-[#EADBCA] to-[#D9A577] min-h-[calc(100vh-90px)] py-8 px-6 flex flex-col justify-center w-full"
+            className="bg-gradient-to-br from-[#F2E9D8] via-[#EADBCA] to-[#D9A577] min-h-[calc(100vh-140px)] py-6 px-6 flex flex-col justify-center w-full"
         >
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
-                <div className="text-center mb-10 space-y-2">
+                <div className="text-center mb-6 space-y-2">
                     <span className="text-primary text-xs font-bold uppercase tracking-[5px] block animate-fade-in">
                         {content.subtitle}
                     </span>

@@ -37,12 +37,12 @@ const AboutUsSection: React.FC<{ hideButton?: boolean }> = memo(({ hideButton = 
     const activeContent = content || aboutSection;
 
     return (
-        <section className="bg-gradient-to-br from-[#F2E9D8] via-[#EADBCA] to-[#D9A577] py-24 px-6 overflow-hidden">
-            <div className="max-w-7xl mx-auto flex flex-col lg:flex-row-reverse items-center gap-20">
+        <section className="bg-gradient-to-br from-[#F2E9D8] via-[#EADBCA] to-[#D9A577] py-8 px-6 overflow-hidden">
+            <div className="max-w-7xl mx-auto flex flex-col lg:flex-row-reverse items-center gap-8">
 
                 {/* Right Side: Text Content */}
-                <div className="w-full lg:w-1/2 space-y-10 animate-fade-in-right">
-                    <div className="space-y-3">
+                <div className="w-full lg:w-1/2 space-y-6 animate-fade-in-right">
+                    <div className="space-y-2">
                         <span className="text-primary text-xs font-bold uppercase tracking-[4px] block">
                             {activeContent.tagline}
                         </span>
@@ -50,11 +50,11 @@ const AboutUsSection: React.FC<{ hideButton?: boolean }> = memo(({ hideButton = 
                             {activeContent.titlePrefix} <br />
                             <span className="text-primary italic">{activeContent.titleSuffix}</span>
                             {/* Golden Underline Accent */}
-                            <span className="block w-24 h-1 bg-primary mt-6 rounded-full"></span>
+                            <span className="block w-24 h-1 bg-primary mt-3 rounded-full"></span>
                         </h2>
                     </div>
 
-                    <div className="text-gray-700 text-base md:text-lg space-y-6 leading-relaxed font-light">
+                    <div className="text-gray-700 text-base md:text-lg space-y-2 leading-relaxed font-light">
                         {activeContent.paragraphs.map((para, idx) => (
                             <p key={idx}>{para}</p>
                         ))}

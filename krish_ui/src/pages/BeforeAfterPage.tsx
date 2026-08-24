@@ -50,7 +50,7 @@ const BeforeAfterPage: React.FC = memo(() => {
     }, [filter, groupedCases]);
 
     return (
-        <section className="min-h-[calc(100vh-64px)] lg:min-h-[calc(100vh-90px)] bg-[#f8f2ea] pt-32 pb-16 selection:bg-primary/30">
+        <section className="min-h-[calc(100vh-64px)] lg:min-h-[calc(100vh-90px)] bg-[#f8f2ea] pt-8 pb-10 selection:bg-primary/30">
             <div className="mx-auto max-w-7xl px-6">
                 {/* Back Button */}
                 <div className="mb-8">
