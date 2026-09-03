@@ -78,10 +78,10 @@ export const UI_STRINGS = {
         titleSuffix: "Gallery",
         subtitle: "Experience The Luxury",
         images: [
-            { url: "/gallery-1.jpg", title: "Facial Treatment" },
-            { url: "/gallery-2.jpg", title: "Skin Care Consultation" },
-            { url: "/gallery-3.jpg", title: "Luxury Spa Room" },
-            { url: "/gallery-4.jpg", title: "Dermatology Procedure" }
+            { url: "/gallery-1.png", title: "Treatment Room" },
+            { url: "/gallery-2.png", title: "Facial Treatment" },
+            { url: "/gallery-3.png", title: "Skin Care Device" },
+            { url: "/gallery-4.png", title: "Advanced Skin Technology" }
         ]
     }
 };

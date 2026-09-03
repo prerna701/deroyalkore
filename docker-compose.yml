@@ -5,12 +5,12 @@ services:
     container_name: mongodb
     restart: unless-stopped
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: admin123
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
     volumes:
       - mongodb_data:/data/db
     healthcheck:
-      test: ["CMD", "mongosh", "-u", "admin", "-p", "admin123", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      test: ["CMD", "mongosh", "-u", "${MONGO_ROOT_USER}", "-p", "${MONGO_ROOT_PASSWORD}", "--quiet", "--eval", "db.adminCommand('ping').ok"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -33,8 +33,8 @@ services:
     environment:
       - PORT=7000
       - NODE_ENV=production
-      - CORS_ORIGIN=https://deroyalkore.com,https://www.deroyalkore.com
-      - MONGO_URI=mongodb://admin:admin123@mongodb:27017
+      - CORS_ORIGIN=https://deroyalkore.com,https://www.deroyalkore.com,http://localhost:3000,http://localhost:5173
+      - MONGO_URI=mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongodb:27017
       - MONGO_DB_NAME=krish_site
       - MONGO_MAX_POOL_SIZE=10
       - MONGO_CONNECT_TIMEOUT_MS=5000
@@ -62,6 +62,8 @@ services:
     build:
       context: ./krish_ui
       dockerfile: Dockerfile
+      args:
+        VITE_BACKEND_DOMAIN: http://localhost:7000
     container_name: frontend
     restart: unless-stopped
     ports:
